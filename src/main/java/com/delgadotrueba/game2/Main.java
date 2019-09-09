@@ -1,5 +1,4 @@
 package com.delgadotrueba.game2;
-//(C) Joseph Mack 2011, jmack (at) wm7d (dot) net, released under GPL v3 (or any later version)
 
 public class Main{
 
@@ -7,6 +6,6 @@ public class Main{
 
 		RunMVC mainRunMVC = new RunMVC();
 
-	} //main()
+	} 
 
-} //Main
+}
