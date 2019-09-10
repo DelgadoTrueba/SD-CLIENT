@@ -41,6 +41,7 @@ public class BoardModel extends java.util.Observable {
 		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 			   for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
 				   mBoard[row][column] = new CellModel(EMPTY_CELL_TYPE);
+				   //mBoard[row][column].setSelected(true);
 			   }
 	  }
 	}
@@ -50,6 +51,19 @@ public class BoardModel extends java.util.Observable {
 		this.setNumOfMatchedPairs(numOfMatchedPairs);
 		this.setNumOfFailedAttempts(numOfFailedAttempts);
 		this.setSelectedCards(selectedCards);
+	}
+	
+	
+	public void setEmptyCardType(int row, int col) {
+		mBoard[row][col].setType(EMPTY_CARD_TYPE);
+	}
+	
+	public void setHiddenCardType(int row, int col) {
+		mBoard[row][col].setType(HIDDEN_CARD_TYPE);
+	}
+	
+	public void setCardType(int row, int col, int type) {
+		mBoard[row][col].setType(type);
 	}
 	
 	// This method creates an array of string holding the indices of 24 random
