@@ -97,6 +97,7 @@ public class BoardView implements java.util.Observer{
 		mSplitPane.setRightComponent(mNewButton);
 		
 		jframe.pack();
+		jframe.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		jframe.setResizable(true);
 		jframe.setVisible(true);		
 	}

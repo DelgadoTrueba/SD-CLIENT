@@ -1,9 +1,15 @@
 package com.delgadotrueba.game2.controllers;
 
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+
 import com.delgadotrueba.game2.errors.ErrorHandler;
 import com.delgadotrueba.game2.models.BoardModel;
 import com.delgadotrueba.game2.models.Model;
+import javax.swing.Action;
 import com.delgadotrueba.game2.views.BoardView;
+import javax.swing.Timer;
 import com.delgadotrueba.game2.views.View;
 
 public class BoardController implements java.awt.event.ActionListener {
@@ -34,9 +40,29 @@ public class BoardController implements java.awt.event.ActionListener {
 	public void initModel(int numOfMatchedPairs, int numOfFailedAttempts, int selectedCards){
 		
 		model.initModel(numOfMatchedPairs, numOfFailedAttempts, selectedCards);
-		showCardImages();
+		
+		//init
+		this.init();
 	}
 	
+	 /** This method initializes the board with a new set of cards*/
+	 public void init() {
+	 	this.model.resetMatchedImages();
+		this.model.resetBoardParam();
+		this.peek();
+		this.model.mCardStorage = this.model.initCardStorage();
+		this.setImages();
+	
+	 }	
+	 
+	 /** This method reinitializes the board with the current set of cards i.e. replay */
+	 public void reInit() {
+		 this.model.resetMatchedImages();
+		 this.model.resetBoardParam();
+		 this.peek();
+		 this.setImages();
+	 }
+	 
 	// This method sets all the images on the board
 		private void showCardImages() {
 			// For each card on the board
@@ -73,6 +99,36 @@ public class BoardController implements java.awt.event.ActionListener {
 		// This method shows a specific image at a certain location
 		private void showImage(int x, int y) {
 			this.view.setImage(x, y,  this.model.mCardStorage[y + (NUMBER_OF_COLUMNS * x)]);
-			System.out.println(x +" "+ y +" "+  this.model.mCardStorage[y + (NUMBER_OF_COLUMNS * x)]);
+		}
+		
+		// This method delays the setCards method, so the user can peek at the cards
+		// before the board resets them
+		private static final int VISIBLE_DELAY = (int) 2 * 1000;
+		private static final int PEEK_DELAY = (int) 2 * 1000;
+		 
+		private void peek() {
+
+			Action showImagesAction = new AbstractAction() {
+		
+				private static final long serialVersionUID = 1L;
+			
+				public void actionPerformed(ActionEvent e) {
+					showCardImages();
+				}
+			};
+		
+			Timer timer = new Timer(PEEK_DELAY, showImagesAction);
+			timer.setRepeats(false);
+			timer.start();
+		}
+		
+		// This method sets the images on the board
+		private void setImages() {
+		
+			for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+				for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {	
+					this.view.setImage(row, column,  this.model.mCardStorage[column + (NUMBER_OF_COLUMNS * row)]);
+				} // column loop
+			} // row loop
 		}
 }

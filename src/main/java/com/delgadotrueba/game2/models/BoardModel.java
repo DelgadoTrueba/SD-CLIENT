@@ -69,7 +69,7 @@ public class BoardModel extends java.util.Observable {
 	// This method creates an array of string holding the indices of 24 random
 	// images grouped in pairs.
 
-	private String[] initCardStorage() {
+	public String[] initCardStorage() {
 
 		String[] cardStorage = new String[MAX_NUM_OF_CARDS];
 		String[] firstPair = new String[NUMBER_OF_PAIRS];
@@ -134,7 +134,7 @@ public class BoardModel extends java.util.Observable {
 	}
 	
 	// this method resets all the matched images, used in the replay method and new game
-	private void resetMatchedImages() {
+	public void resetMatchedImages() {
 		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
 				if (mBoard[row][column].isMatched()) {
@@ -161,7 +161,7 @@ public class BoardModel extends java.util.Observable {
 	}
 
 	// This method resets the parameters of the board used when replaying or when starting a new game
-	private void resetBoardParam() {
+	public void resetBoardParam() {
 		resetFailedAttempts();
 		resetNumMatchedCards();
 	}
