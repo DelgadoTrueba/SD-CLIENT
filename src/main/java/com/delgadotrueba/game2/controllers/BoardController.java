@@ -29,16 +29,16 @@ public class BoardController implements java.awt.event.ActionListener {
 	public BoardController() {	
 		// Must be empty
 	} 
-
-	//invoked when a button is pressed
-	 /**
-	  * This method is the action performed when a card is clicked it represents
-	  * the main user interface of the game
-	  * 
-	  * @param e
-	  *            an ActionEvent
-	  */
 	
+	public void addModel(BoardModel m){
+		this.model = m;
+	}
+
+	public void addView(BoardView v){
+		this.view = v;
+	}
+
+	//invoked when a button is pressed	
 	public void actionPerformed(java.awt.event.ActionEvent e){
 
 		if (e == null) {
@@ -52,38 +52,32 @@ public class BoardController implements java.awt.event.ActionListener {
 		}
 
 		CellView cellView = (CellView) e.getSource();
-		CellModel cellModel = this.model.mBoard[cellView.getRow()][cellView.getColumn()];
+		CellModel cellModel = this.getCellModel(cellView);
   		if (!this.model.isCardValid(cellModel)) {
   			return;
   		}
 
-  		// Proceed with cases we want to cover
+  		// START GAME
   		this.model.incrementSelectedCards();
 
-  		if (this.model.getSelectedCards() <= BoardModel.getMaxSelectedCards()) {
+  		if ( this.model.isChoosable() ) {
+  			
   			this.model.setCardToVisible(cellView.getRow(), cellView.getColumn());
+  			//logica
   			this.showCardImages();
-  			this.model.mCardChecker[this.model.getSelectedCards() - 1] = this.model.getCellAtLoc(cellView.getRow(), cellView.getColumn());
-  			this.model.addToChose(this.model.getCellAtLoc(cellView.getRow(), cellView.getColumn()));
+  			this.model.saveCard(cellModel);
   		}
-  		if (this.model.getSelectedCards() == BoardModel.getMaxSelectedCards() ) {
 
+  		if ( this.model.isPlayable() ) {
   			if (!this.model.sameCellPosition()) {
-///////////////////setSelectedCards(this.model.mCardChecker[FIRST], mCardChecker[SECOND]);
-  				setSelectedCards(this.model.mCardChecker[0], this.model.mCardChecker[1]);
+  				CellModel firstCard = this.model.getFirst();
+  				CellModel secondCard = this.model.getSecond();
+  				play(firstCard, secondCard);
   			} else {
   				this.model.decrementSelectedCards();
   			}
-  		} // if selectedCards == MAX
+  		}
 	
-	}
-
-	public void addModel(BoardModel m){
-		this.model = m;
-	}
-
-	public void addView(BoardView v){
-		this.view = v;
 	}
 
 	public void initModel(int numOfMatchedPairs, int numOfFailedAttempts, int selectedCards){
@@ -100,7 +94,7 @@ public class BoardController implements java.awt.event.ActionListener {
 		this.model.resetBoardParam();
 		this.peek();
 		this.model.mCardStorage = this.model.initCardStorage();
-		this.setImages();
+		this.showGameImages();
 	
 	 }	
 	 
@@ -109,13 +103,13 @@ public class BoardController implements java.awt.event.ActionListener {
 		 this.model.resetMatchedImages();
 		 this.model.resetBoardParam();
 		 this.peek();
-		 this.setImages();
+		 this.showGameImages();
 	 }
 	 
 	// This method check if any 2 selected cards are the same so it replaces
 	// them with a blank cell or if they're different it flips them back,
 	// it also check if the board is solved
-	private void setSelectedCards(CellModel firstCell, CellModel secondCell) {
+	private void play(CellModel firstCell, CellModel secondCell) {
 
 		if (firstCell == null || secondCell == null) {
 	
@@ -134,7 +128,10 @@ public class BoardController implements java.awt.event.ActionListener {
 			secondCell.setMatched(true);
 			firstCell.setSelected(false);
 			secondCell.setSelected(false);
-			showImage(getCellLocation(secondCell).x, getCellLocation(secondCell).y);
+			/**/
+			Point cell = getCellLocation(secondCell);
+			showGameImage(cell.x, cell.y);
+			/**/
 			peek();
 			this.model.incrementNumOfMatchedPairs();
 			if(this.model.isSolved()) {
@@ -147,15 +144,81 @@ public class BoardController implements java.awt.event.ActionListener {
 			secondCell.setMatched(false);
 			firstCell.setSelected(false);
 			secondCell.setSelected(false);
-			showImage(getCellLocation(secondCell).x, getCellLocation(secondCell).y);
+			
+			/**/
+			Point cell = getCellLocation(secondCell);
+			showGameImage(cell.x, cell.y);
+			/**/
+			
 			peek();
 			this.model.incremenetNumOfFailedAttempts();
 		}
 		this.model.resetSelectedCards();
 	}
+	 
+	// This method sets all the images on the board
+	private void showCardImages() {
+		// For each card on the board
+		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+		
+				if (!this.model.mBoard[row][column].isSelected()) {
+					// If selected, verify if the card was matched by the user
+					if (this.model.mBoard[row][column].isMatched()) {
+						// It was matched, empty the card slot
+						this.view.setEmptyImage(row, column);
+						this.model.setEmptyCardType(row, column);
+					} else {
+						// It was not, put the "hidden card" image
+						this.view.setHiddenImage(row, column);
+						this.model.setHiddenCardType(row, column);
+					}
+				} else {
+					String type = this.model.mCardStorage[column + (NUMBER_OF_COLUMNS * row)];
+					
+					this.view.setImage(row, column, type);
+					this.model.setCardType(row, column, type);
+				} 
+			} 
+		} 
+	}
 	
-	// This method gets the location of a cell on the board and returns that
-	// specific point
+	
+	// This method delays the setCards method, so the user can peek at the cards before the board resets them
+	private void peek() {
+
+		Action showImagesAction = new AbstractAction() {
+	
+			private static final long serialVersionUID = 1L;
+		
+			public void actionPerformed(ActionEvent e) {
+				showCardImages();
+			}
+		};
+	
+		int PEEK_DELAY = (int) 2 * 1000;
+		
+		Timer timer = new Timer(PEEK_DELAY, showImagesAction);
+		timer.setRepeats(false);
+		timer.start();
+	}
+	
+	// This method sets the images on the board
+	private void showGameImages() {
+		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {	
+				String num = this.model.mCardStorage[column + (NUMBER_OF_COLUMNS * row)];
+				this.view.setImage(row, column, num);
+			}
+		}
+	}
+	
+	private void showGameImage(int row, int column) {
+		String num = this.model.mCardStorage[column + (NUMBER_OF_COLUMNS * row)];
+		this.view.setImage(row, column, num);
+	}
+	
+	// This method gets the location of a cell on the board and returns that specific point
 	private Point getCellLocation(CellModel aCell) {
 
 		if (aCell == null) {
@@ -171,78 +234,15 @@ public class BoardController implements java.awt.event.ActionListener {
 					p.setLocation(column, row);
 					return p;
 				}
-			} // row for
-		} // column for
+			}
+		}
 		return null;
 	}
-	 
-	// This method sets all the images on the board
-		private void showCardImages() {
-			// For each card on the board
-			for (int row = 0; row < NUMBER_OF_ROWS; row++) {
-				for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
-			
-					// Is card selected ?
-					if (!this.model.mBoard[row][column].isSelected()) {
-						// If selected, verify if the card was matched by the user
-						if (this.model.mBoard[row][column].isMatched()) {
-							// It was matched, empty the card slot
-							this.view.setEmptyImage(row, column);
-							this.model.setEmptyCardType(row, column);
-						} else {
-							// It was not, put the "hidden card" image
-							this.view.setHiddenImage(row, column);
-							this.model.setHiddenCardType(row, column);
-					}
-			
-					} else {
-						// The card was not selected
-						showImage(row, column);
-					
-						String type = this.model.mCardStorage[column + (NUMBER_OF_COLUMNS * row)];
-						int parsedType = Integer.parseInt(type);
-					
-						this.model.setCardType(row, column, parsedType);
-				
-					} 
-				} 
-			} 
-		}
+	
+	private CellModel getCellModel(CellView cellView) {
+		return this.model.mBoard[cellView.getRow()][cellView.getColumn()];
+	}
 		
-		// This method shows a specific image at a certain location
-		private void showImage(int x, int y) {
-			this.view.setImage(x, y,  this.model.mCardStorage[y + (NUMBER_OF_COLUMNS * x)]);
-		}
-		
-		// This method delays the setCards method, so the user can peek at the cards
-		// before the board resets them
-		private static final int PEEK_DELAY = (int) 2 * 1000;
-		 
-		private void peek() {
-
-			Action showImagesAction = new AbstractAction() {
-		
-				private static final long serialVersionUID = 1L;
-			
-				public void actionPerformed(ActionEvent e) {
-					showCardImages();
-				}
-			};
-		
-			Timer timer = new Timer(PEEK_DELAY, showImagesAction);
-			timer.setRepeats(false);
-			timer.start();
-		}
-		
-		// This method sets the images on the board
-		private void setImages() {
-		
-			for (int row = 0; row < NUMBER_OF_ROWS; row++) {
-				for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {	
-					this.view.setImage(row, column,  this.model.mCardStorage[column + (NUMBER_OF_COLUMNS * row)]);
-				} // column loop
-			} // row loop
-		}
 		
 		
 }

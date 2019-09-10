@@ -26,11 +26,7 @@ public class BoardModel extends java.util.Observable {
 	
 	private static final int MIN_NUM_OF_CARDS = 1;
 	private static final int MAX_SELECTED_CARDS = 2;
-	
-	public static int getMaxSelectedCards() {
-		return MAX_SELECTED_CARDS;
-	}
-	
+		
 	// Card types
 	private static final int EMPTY_CELL_TYPE = 0;
 	private static final int HIDDEN_CARD_TYPE = 26;
@@ -38,7 +34,7 @@ public class BoardModel extends java.util.Observable {
 
 	
 	public CellModel[][] mBoard = null;
-	public ArrayList<CellModel> chosenCards = new ArrayList<CellModel>();
+	
 
 	public String[] mCardStorage;
 	
@@ -49,6 +45,8 @@ public class BoardModel extends java.util.Observable {
 	private static final int SECOND = 1;
 	public CellModel[] mCardChecker = new CellModel[MAX_SELECTED_CARDS];
 	private int selectedCards = 0;
+	
+	public ArrayList<CellModel> chosenCards = new ArrayList<CellModel>();
 	
 	public BoardModel() {
 		mCardStorage = initCardStorage();
@@ -165,8 +163,9 @@ public class BoardModel extends java.util.Observable {
 		mBoard[row][col].setType(HIDDEN_CARD_TYPE);
 	}
 	
-	public void setCardType(int row, int col, int type) {
-		mBoard[row][col].setType(type);
+	public void setCardType(int row, int col, String type) {
+		int parsedType = Integer.parseInt(type);
+		mBoard[row][col].setType(parsedType);
 	}
 	
 	// This method creates an array of string holding the indices of 24 random
@@ -352,6 +351,27 @@ public class BoardModel extends java.util.Observable {
 		this.mBoard = mBoard;
 	}
 	
+	public CellModel getFirst() {
+		return this.mCardChecker[FIRST];
+	}
+	
+	public CellModel getSecond() {
+		return this.mCardChecker[SECOND];
+	}
+	
+	
+	public void saveCard(CellModel cellModel) {
+		this.mCardChecker[this.selectedCards - 1] = cellModel;
+		this.addToChose(cellModel);
+	}
+	
+	public boolean isPlayable() {
+		return this.selectedCards == MAX_SELECTED_CARDS;
+	}
+	
+	public boolean isChoosable() {
+		return this.selectedCards <= MAX_SELECTED_CARDS;
+	}
 	
 	
 
