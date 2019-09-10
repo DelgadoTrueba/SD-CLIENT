@@ -62,9 +62,8 @@ public class BoardController implements java.awt.event.ActionListener {
 
   		if ( this.model.isChoosable() ) {
   			
-  			this.model.setCardToVisible(cellView.getRow(), cellView.getColumn());
-  			//logica
-  			this.showCardImages();
+  			this.model.selectCard(cellView.getRow(), cellView.getColumn());
+  			this.setCardVisible(cellView.getRow(), cellView.getColumn());
   			this.model.saveCard(cellModel);
   		}
 
@@ -81,10 +80,7 @@ public class BoardController implements java.awt.event.ActionListener {
 	}
 
 	public void initModel(int numOfMatchedPairs, int numOfFailedAttempts, int selectedCards){
-		
-		model.initModel(numOfMatchedPairs, numOfFailedAttempts, selectedCards);
-		
-		//init
+		model.initModel(numOfMatchedPairs, numOfFailedAttempts, selectedCards);		
 		this.init();
 	}
 	
@@ -92,22 +88,21 @@ public class BoardController implements java.awt.event.ActionListener {
 	 public void init() {
 	 	this.model.resetMatchedImages();
 		this.model.resetBoardParam();
-		this.peek();
 		this.model.mCardStorage = this.model.initCardStorage();
-		this.showGameImages();
-	
+		this.showImagesForce();
+		this.hiddenImagesWithDelay();
 	 }	
 	 
 	 /** This method reinitializes the board with the current set of cards i.e. replay */
 	 public void reInit() {
 		 this.model.resetMatchedImages();
 		 this.model.resetBoardParam();
-		 this.peek();
-		 this.showGameImages();
+		 this.showImagesForce();
+		 this.hiddenImagesWithDelay();
 	 }
 	 
-	// This method check if any 2 selected cards are the same so it replaces
-	// them with a blank cell or if they're different it flips them back,
+	// This method check if any 2 selected cards are the same: 
+	// so it replaces them with a blank cell or if they're different it flips them back,
 	// it also check if the board is solved
 	private void play(CellModel firstCell, CellModel secondCell) {
 
@@ -128,17 +123,16 @@ public class BoardController implements java.awt.event.ActionListener {
 			secondCell.setMatched(true);
 			firstCell.setSelected(false);
 			secondCell.setSelected(false);
+			
 			/**/
 			Point cell = getCellLocation(secondCell);
-			showGameImage(cell.x, cell.y);
-			/**/
-			peek();
-			this.model.incrementNumOfMatchedPairs();
-			if(this.model.isSolved()) {
-				int numOfFailt = this.model.getNumOfFailedAttempts();
-				int numOfCards = BoardModel.getMaxNumOfCards();
-				this.view.finalMessage(numOfFailt, numOfCards);
+			setCardVisible(cell.x, cell.y);
+			setCardsEmpty();
+			if(model.isSolved()) {
+					view.finalMessage();
 			}
+			/**/
+			this.model.incrementNumOfMatchedPairs();
 		} else {
 			firstCell.setMatched(false);
 			secondCell.setMatched(false);
@@ -147,52 +141,53 @@ public class BoardController implements java.awt.event.ActionListener {
 			
 			/**/
 			Point cell = getCellLocation(secondCell);
-			showGameImage(cell.x, cell.y);
+			setCardVisible(cell.x, cell.y);
+			setCardsEmpty();
+			setCardsHidden();
 			/**/
-			
-			peek();
+
 			this.model.incremenetNumOfFailedAttempts();
 		}
 		this.model.resetSelectedCards();
 	}
 	 
-	// This method sets all the images on the board
-	private void showCardImages() {
-		// For each card on the board
-		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
-			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
-		
-				if (!this.model.mBoard[row][column].isSelected()) {
-					// If selected, verify if the card was matched by the user
-					if (this.model.mBoard[row][column].isMatched()) {
-						// It was matched, empty the card slot
-						this.view.setEmptyImage(row, column);
-						this.model.setEmptyCardType(row, column);
-					} else {
-						// It was not, put the "hidden card" image
-						this.view.setHiddenImage(row, column);
-						this.model.setHiddenCardType(row, column);
-					}
-				} else {
-					String type = this.model.mCardStorage[column + (NUMBER_OF_COLUMNS * row)];
-					
-					this.view.setImage(row, column, type);
-					this.model.setCardType(row, column, type);
-				} 
-			} 
-		} 
+	// CHANGE MODEL AND REACT
+	private void setCardVisible(int row, int column) {
+			String type = this.model.mCardStorage[column + (NUMBER_OF_COLUMNS * row)];
+			this.model.setCardType(row, column, type);
 	}
 	
+	private void setCardsHidden() {
+		CellModel cellModel1 = this.model.mCardChecker[0];
+		CellModel cellModel2 = this.model.mCardChecker[1];
+		
+		Point p1 = this.getCellLocation(cellModel1);
+		Point p2 = this.getCellLocation(cellModel2);
+		
+		this.model.setHiddenCardType(p1.x, p1.y);
+		this.model.setHiddenCardType(p2.x, p2.y);
+	}
 	
-	// This method delays the setCards method, so the user can peek at the cards before the board resets them
-	private void peek() {
+	private void setCardsEmpty() {
+		CellModel cellModel1 = this.model.mCardChecker[0];
+		CellModel cellModel2 = this.model.mCardChecker[1];
+		
+		Point p1 = this.getCellLocation(cellModel1);
+		Point p2 = this.getCellLocation(cellModel2);
+		
+		this.model.setEmptyCardType(p1.x, p1.y);
+		this.model.setEmptyCardType(p2.x, p2.y);
+	}
+	
+	//START & RE-START A GAME
+	private void hiddenImagesWithDelay() {
 
 		Action showImagesAction = new AbstractAction() {
 	
 			private static final long serialVersionUID = 1L;
 		
 			public void actionPerformed(ActionEvent e) {
-				showCardImages();
+				hiddenImages();
 			}
 		};
 	
@@ -203,8 +198,15 @@ public class BoardController implements java.awt.event.ActionListener {
 		timer.start();
 	}
 	
-	// This method sets the images on the board
-	private void showGameImages() {
+	private void hiddenImages() {
+		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				this.view.setHiddenImage(row, column);
+			}
+		}
+	}
+	
+	private void showImagesForce() {
 		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {	
 				String num = this.model.mCardStorage[column + (NUMBER_OF_COLUMNS * row)];
@@ -213,12 +215,7 @@ public class BoardController implements java.awt.event.ActionListener {
 		}
 	}
 	
-	private void showGameImage(int row, int column) {
-		String num = this.model.mCardStorage[column + (NUMBER_OF_COLUMNS * row)];
-		this.view.setImage(row, column, num);
-	}
-	
-	// This method gets the location of a cell on the board and returns that specific point
+	//WRAPPER
 	private Point getCellLocation(CellModel aCell) {
 
 		if (aCell == null) {

@@ -7,12 +7,15 @@ import java.util.Observable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.Timer;
 
 import com.delgadotrueba.game2.models.BoardModel;
 import com.delgadotrueba.game2.notifications.ActionsBoardModel;
@@ -113,6 +116,22 @@ public class BoardView implements java.util.Observer{
 			int num = notification.model.getSelectedCards();
 			this.btnSelectedCards.setText("selectedCards: " + num);
 		}
+		
+		if(obs instanceof BoardModel && ActionsBoardModel.setEmptyCardType.equals(notification.action)) {
+			int PEEK_DELAY = (int) 1 * 1000;
+			Timer timer = new Timer(PEEK_DELAY, e -> setEmptyImage( notification.row, notification.col));
+			timer.setRepeats(false);
+			timer.start();
+		}
+		if(obs instanceof BoardModel && ActionsBoardModel.setHiddenCardType.equals(notification.action)) {
+			int PEEK_DELAY = (int) 1 * 1000;
+			Timer timer = new Timer(PEEK_DELAY, e -> setHiddenImage( notification.row, notification.col));
+			timer.setRepeats(false);
+			timer.start();
+		}
+		if(obs instanceof BoardModel && ActionsBoardModel.setCardType.equals(notification.action)) {
+			setImage( notification.row, notification.col, notification.type);
+		}
 	} 
 	
 	//PUBLIC API
@@ -141,10 +160,8 @@ public class BoardView implements java.util.Observer{
 		 }
 	}
 	 
-	public void finalMessage(int numOfFailedAttempts, int MAX_NUM_OF_CARDS ) {
-		 Float numeralScore = (((float) numOfFailedAttempts) / ((float) MAX_NUM_OF_CARDS)) * 100;
-		 String textualScore = numeralScore.toString();
-	
-		 JOptionPane.showMessageDialog(null, "Solved!! Your results:\n" + " Failed Attempts: " + numOfFailedAttempts + "\n Error percentage : " + textualScore + " %", "RESULTS", JOptionPane.INFORMATION_MESSAGE);
+	public void finalMessage() {
+		 JOptionPane.showMessageDialog(null, "Solved!!", "RESULT", JOptionPane.INFORMATION_MESSAGE);
 	}
+		
 }

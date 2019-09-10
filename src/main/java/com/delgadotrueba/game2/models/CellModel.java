@@ -39,7 +39,7 @@ public class CellModel {
 		}
 		mType = aType;
 	}
-	
+		
 	public boolean sameType(CellModel other) {
 		if (other == null) {
 			ErrorHandler.error("CELL: ", "sameType(Cell) received null", false);

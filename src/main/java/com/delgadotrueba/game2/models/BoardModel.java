@@ -1,12 +1,7 @@
 package com.delgadotrueba.game2.models;
 
-import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Random;
-
-import javax.swing.JButton;
 
 import com.delgadotrueba.game2.notifications.ActionsBoardModel;
 import com.delgadotrueba.game2.notifications.BoardModelNotification;
@@ -19,10 +14,6 @@ public class BoardModel extends java.util.Observable {
 	
 	private static final int NUMBER_OF_PAIRS = 12;
 	private static final int MAX_NUM_OF_CARDS = 24;
-	
-	public static int getMaxNumOfCards() {
-		return MAX_NUM_OF_CARDS;
-	}
 	
 	private static final int MIN_NUM_OF_CARDS = 1;
 	private static final int MAX_SELECTED_CARDS = 2;
@@ -157,15 +148,27 @@ public class BoardModel extends java.util.Observable {
 	
 	public void setEmptyCardType(int row, int col) {
 		mBoard[row][col].setType(EMPTY_CARD_TYPE);
+		setChanged();
+		notifyObservers(
+				new BoardModelNotification(ActionsBoardModel.setEmptyCardType, row, col)
+				);
 	}
 	
 	public void setHiddenCardType(int row, int col) {
 		mBoard[row][col].setType(HIDDEN_CARD_TYPE);
+		setChanged();
+		notifyObservers(
+				new BoardModelNotification(ActionsBoardModel.setHiddenCardType, row, col)
+				);
 	}
 	
 	public void setCardType(int row, int col, String type) {
 		int parsedType = Integer.parseInt(type);
 		mBoard[row][col].setType(parsedType);
+		setChanged();
+		notifyObservers(
+				new BoardModelNotification(ActionsBoardModel.setCardType, row, col, type)
+				);
 	}
 	
 	// This method creates an array of string holding the indices of 24 random
@@ -249,7 +252,7 @@ public class BoardModel extends java.util.Observable {
 	}
 	
 	// This method sets a card to visible at a certain location
-	public void setCardToVisible(int x, int y) {
+	public void selectCard(int x, int y) {
 		mBoard[x][y].setSelected(true);
 	}
 

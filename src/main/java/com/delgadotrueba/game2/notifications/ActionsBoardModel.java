@@ -4,5 +4,8 @@ public enum ActionsBoardModel {
 	setNumOfMatchedPairs,
 	setNumOfFailedAttempts,
 	setSelectedCards,
-	setCardToVisible
+	
+	setEmptyCardType,
+	setHiddenCardType,
+	setCardType,
 }
