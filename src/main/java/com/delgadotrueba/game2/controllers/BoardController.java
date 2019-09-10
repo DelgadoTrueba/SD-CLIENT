@@ -1,5 +1,6 @@
 package com.delgadotrueba.game2.controllers;
 
+import com.delgadotrueba.game2.errors.ErrorHandler;
 import com.delgadotrueba.game2.models.BoardModel;
 import com.delgadotrueba.game2.models.Model;
 import com.delgadotrueba.game2.views.BoardView;
@@ -7,8 +8,11 @@ import com.delgadotrueba.game2.views.View;
 
 public class BoardController implements java.awt.event.ActionListener {
 	
-	BoardModel model;
-	BoardView view;
+	private static final int NUMBER_OF_ROWS = 4;
+	private static final int NUMBER_OF_COLUMNS = 6;
+	
+	private BoardModel model;
+	private BoardView view;
 
 	public BoardController() {	
 		// Must be empty
@@ -30,5 +34,47 @@ public class BoardController implements java.awt.event.ActionListener {
 	public void initModel(int numOfMatchedPairs, int numOfFailedAttempts, int selectedCards){
 		
 		model.initModel(numOfMatchedPairs, numOfFailedAttempts, selectedCards);
+		showCardImages();
 	}
+	
+	// This method sets all the images on the board
+		private void showCardImages() {
+			;
+			// For each card on the board
+			for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+				for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+			
+					// Is card selected ?
+					if (!this.model.mBoard[row][column].isSelected()) {
+					//TO TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+						// If selected, verify if the card was matched by the user
+						if (this.model.mBoard[row][column].isMatched()) {
+							// It was matched, empty the card slot
+							this.view.setEmptyImage(row, column);
+							//mBoard[row][column].setType(EMPTY_CARD_TYPE);
+						} else {
+							// It was not, put the "hidden card" image
+							this.view.setHiddenImage(row, column);
+							//mBoard[row][column].setType(HIDDEN_CARD_TYPE);
+					}
+			
+					} else {
+					//<- focusssss
+					// The card was not selected
+						showImage(row, column);
+					
+						String type = this.model.mCardStorage[column + (NUMBER_OF_COLUMNS * row)];
+						int parsedType = Integer.parseInt(type);
+					
+						this.model.mBoard[row][column].setType(parsedType);
+				
+					} // Is card selected?
+				} // inner loop - columns
+			} // outer loop - rows
+		}
+		
+		// This method shows a specific image at a certain location
+		private void showImage(int x, int y) {
+			this.view.setImage(x, y,  this.model.mCardStorage[y + (NUMBER_OF_COLUMNS * x)]);
+		}
 }

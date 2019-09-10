@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.Observable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +18,9 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 
+import javax.swing.ImageIcon;
+
+import com.delgadotrueba.game2.errors.ErrorHandler;
 import com.delgadotrueba.game2.models.BoardModel;
 import com.delgadotrueba.game2.models.Model;
 import com.delgadotrueba.game2.notifications.ActionsBoardModel;
@@ -25,10 +29,19 @@ import com.delgadotrueba.game2.notifications.BoardModelNotification;
 import com.delgadotrueba.game2.notifications.ModelNotification;
 
 public class BoardView implements java.util.Observer{
-	 // GUI components
-	 private static final int BOARD_BORDER_WIDTH = 20;
+	
 	 private static final int NUMBER_OF_ROWS = 4;
 	 private static final int NUMBER_OF_COLUMNS = 6;
+	 
+	 // GUI components
+	 private static final int BOARD_BORDER_WIDTH = 20;
+	
+	 // Card image file properties
+	 private static final String DEFAULT_IMAGE_FILENAME_SUFFIX = ".jpg";
+	 private static final String DEFAULT_IMAGE_FILENAME_PREFIX = "img-";
+	 private static final String DEFAULT_IMAGE_FOLDER = "/images/";
+	 private static final String HIDDEN_IMAGE_PATH = DEFAULT_IMAGE_FOLDER + DEFAULT_IMAGE_FILENAME_PREFIX + "26" + DEFAULT_IMAGE_FILENAME_SUFFIX;
+	 private static final String EMPTY_IMAGE_PATH = DEFAULT_IMAGE_FOLDER + DEFAULT_IMAGE_FILENAME_PREFIX + "25" + DEFAULT_IMAGE_FILENAME_SUFFIX;
 	 
 	 public JButton[][] btnBoard;
 	 public JButton btnNumOfMatchedPairs;
@@ -127,5 +140,23 @@ public class BoardView implements java.util.Observer{
 	public void setValue(int v){
 		//myTextField.setText("" + v);
 	}
- 
+	
+	public void setImage(int row, int col, String num) {
+		File resourcesDirectory = new File("src/main/resources" + DEFAULT_IMAGE_FOLDER + DEFAULT_IMAGE_FILENAME_PREFIX + num + DEFAULT_IMAGE_FILENAME_SUFFIX);
+		if (resourcesDirectory == null) {
+			ErrorHandler.error("Board View: ", "showImage(int, int) reported error \"File not found\".", true);
+		}
+		this.btnBoard[row][col].setIcon(new ImageIcon(resourcesDirectory.getAbsolutePath()));
+	}
+	
+	public void setEmptyImage(int row, int col) {
+		File resourcesDirectory = new File("src/main/resources" + EMPTY_IMAGE_PATH);
+		this.btnBoard[row][col].setIcon(new ImageIcon(resourcesDirectory.getAbsolutePath()));
+	}
+	
+	public void setHiddenImage(int row, int col) {
+		File resourcesDirectory = new File("src/main/resources" + HIDDEN_IMAGE_PATH);
+		this.btnBoard[row][col].setIcon(new ImageIcon(resourcesDirectory.getAbsolutePath()));
+	}
+	
 }
