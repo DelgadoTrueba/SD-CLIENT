@@ -74,7 +74,7 @@ public class BoardController implements java.awt.event.ActionListener {
   			} else {
   				this.model.decrementSelectedCards();
   			}
-	  } // if selectedCards == MAX
+  		} // if selectedCards == MAX
 	
 	}
 
@@ -137,10 +137,12 @@ public class BoardController implements java.awt.event.ActionListener {
 			showImage(getCellLocation(secondCell).x, getCellLocation(secondCell).y);
 			peek();
 			this.model.incrementNumOfMatchedPairs();
-///////////////////////////////
-			//finalMessage();
+			if(this.model.isSolved()) {
+				int numOfFailt = this.model.getNumOfFailedAttempts();
+				int numOfCards = BoardModel.getMaxNumOfCards();
+				this.view.finalMessage(numOfFailt, numOfCards);
+			}
 		} else {
-	
 			firstCell.setMatched(false);
 			secondCell.setMatched(false);
 			firstCell.setSelected(false);
@@ -214,7 +216,6 @@ public class BoardController implements java.awt.event.ActionListener {
 		
 		// This method delays the setCards method, so the user can peek at the cards
 		// before the board resets them
-		private static final int VISIBLE_DELAY = (int) 2 * 1000;
 		private static final int PEEK_DELAY = (int) 2 * 1000;
 		 
 		private void peek() {

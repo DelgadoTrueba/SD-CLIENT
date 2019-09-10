@@ -19,6 +19,11 @@ public class BoardModel extends java.util.Observable {
 	
 	private static final int NUMBER_OF_PAIRS = 12;
 	private static final int MAX_NUM_OF_CARDS = 24;
+	
+	public static int getMaxNumOfCards() {
+		return MAX_NUM_OF_CARDS;
+	}
+	
 	private static final int MIN_NUM_OF_CARDS = 1;
 	private static final int MAX_SELECTED_CARDS = 2;
 	
@@ -51,7 +56,6 @@ public class BoardModel extends java.util.Observable {
 		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 			   for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
 				   mBoard[row][column] = new CellModel(EMPTY_CELL_TYPE);
-				   //mBoard[row][column].setSelected(true);
 			   }
 	  }
 	}
@@ -122,7 +126,7 @@ public class BoardModel extends java.util.Observable {
   * @return true if the board is solved, false if there remains cards that
   *         have to be matched
   */
-	public boolean isSolved() {		
+	public boolean isSolved() {	
 		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
 				if (!mBoard[row][column].isEmpty()) {
@@ -130,7 +134,7 @@ public class BoardModel extends java.util.Observable {
 				}
 			}
 		}
-		return true;
+		return true;	
 	}
 	
 	 /**
@@ -169,7 +173,7 @@ public class BoardModel extends java.util.Observable {
 	// images grouped in pairs.
 
 	public String[] initCardStorage() {
-
+		/*
 		String[] cardStorage = new String[MAX_NUM_OF_CARDS];
 		String[] firstPair = new String[NUMBER_OF_PAIRS];
 		String[] secondPair = new String[NUMBER_OF_PAIRS];
@@ -191,6 +195,8 @@ public class BoardModel extends java.util.Observable {
 		}
 	
 		return cardStorage;
+		*/
+		return new String[]{"01", "01","02", "02", "03", "03","04", "04", "05", "05","06", "06", "07", "07","08", "08", "09", "09","10", "10", "11", "11","12", "12"};
 	}
 	
 	// this method is to generate a list of NUMBER_OF_PAIRS images (types)
@@ -252,6 +258,10 @@ public class BoardModel extends java.util.Observable {
 	// This method resets the number of selected cards to 0 after 2 cards have been chosen and checked
 	public void resetSelectedCards() {
 		selectedCards = 0;
+		setChanged();
+		notifyObservers(
+				new BoardModelNotification(ActionsBoardModel.setSelectedCards, this)
+				);
 	}
 	
 	// This method resets the number of matched pairs on the board

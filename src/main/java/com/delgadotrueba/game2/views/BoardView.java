@@ -10,6 +10,8 @@ import java.util.Observable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,6 +19,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.Timer;
+import javax.swing.AbstractAction;
 
 import javax.swing.ImageIcon;
 
@@ -35,6 +39,9 @@ public class BoardView implements java.util.Observer{
 	 
 	 // GUI components
 	 private static final int BOARD_BORDER_WIDTH = 20;
+	 
+	 private static final int VISIBLE_DELAY = (int) 2 * 1000;
+
 	
 	 // Card image file properties
 	 private static final String DEFAULT_IMAGE_FILENAME_SUFFIX = ".jpg";
@@ -88,12 +95,12 @@ public class BoardView implements java.util.Observer{
 	
 		JButton mRetryButton = new JButton("Retry");
 		mRetryButton.setFocusPainted(false);
-		mRetryButton.addActionListener(new RetryButton());
+		mRetryButton.addActionListener(new RetryBoard());
 		mSplitPane.setLeftComponent(mRetryButton);
 	
 		JButton mNewButton = new JButton("New Game");
 		mNewButton.setFocusPainted(false);
-		mNewButton.addActionListener(new NewButton());
+		mNewButton.addActionListener(new NewBoard());
 		mSplitPane.setRightComponent(mNewButton);
 		
 		jframe.pack();
@@ -102,19 +109,26 @@ public class BoardView implements java.util.Observer{
 		jframe.setVisible(true);		
 	}
 	 
-	 private class RetryButton implements ActionListener {
+	 private class RetryBoard implements ActionListener {
 		 public void actionPerformed(ActionEvent e) {
 			 JOptionPane.showMessageDialog(null, "Init", "Info", JOptionPane.INFORMATION_MESSAGE);
 		 }
 	 }
 	 
-	 private class NewButton implements ActionListener {
+	 private class NewBoard implements ActionListener {
 		 public void actionPerformed(ActionEvent e) {
 			 JOptionPane.showMessageDialog(null, "Init", "Info", JOptionPane.INFORMATION_MESSAGE);
 		 }
 	 }
 	 
-	// Called from the Model
+	 public void finalMessage(int numOfFailedAttempts, int MAX_NUM_OF_CARDS ) {
+		 Float numeralScore = (((float) numOfFailedAttempts) / ((float) MAX_NUM_OF_CARDS)) * 100;
+		 String textualScore = numeralScore.toString();
+	
+		 JOptionPane.showMessageDialog(null, "Solved!! Your results:\n" + " Failed Attempts: " + numOfFailedAttempts + "\n Error percentage : " + textualScore + " %", "RESULTS", JOptionPane.INFORMATION_MESSAGE);
+	 }
+	
+	 // Called from the Model
 	public void update(Observable obs, Object obj) {
 	
 		BoardModelNotification notification = ((BoardModelNotification)obj);
@@ -162,5 +176,5 @@ public class BoardView implements java.util.Observer{
 		File resourcesDirectory = new File("src/main/resources" + HIDDEN_IMAGE_PATH);
 		this.btnBoard[row][col].setIcon(new ImageIcon(resourcesDirectory.getAbsolutePath()));
 	}
-	
+		
 }
