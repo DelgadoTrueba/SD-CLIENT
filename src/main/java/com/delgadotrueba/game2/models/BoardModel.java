@@ -1,5 +1,6 @@
 package com.delgadotrueba.game2.models;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,9 +9,8 @@ import java.util.Random;
 import javax.swing.JButton;
 
 import com.delgadotrueba.game2.notifications.ActionsBoardModel;
-import com.delgadotrueba.game2.notifications.ActionsModel;
 import com.delgadotrueba.game2.notifications.BoardModelNotification;
-import com.delgadotrueba.game2.notifications.ModelNotification;
+import com.delgadotrueba.game2.errors.ErrorHandler;
 
 public class BoardModel extends java.util.Observable {
 	
@@ -20,6 +20,11 @@ public class BoardModel extends java.util.Observable {
 	private static final int NUMBER_OF_PAIRS = 12;
 	private static final int MAX_NUM_OF_CARDS = 24;
 	private static final int MIN_NUM_OF_CARDS = 1;
+	private static final int MAX_SELECTED_CARDS = 2;
+	
+	public static int getMaxSelectedCards() {
+		return MAX_SELECTED_CARDS;
+	}
 	
 	// Card types
 	private static final int EMPTY_CELL_TYPE = 0;
@@ -28,11 +33,16 @@ public class BoardModel extends java.util.Observable {
 
 	
 	public CellModel[][] mBoard = null;
-	
+	public ArrayList<CellModel> chosenCards = new ArrayList<CellModel>();
+
 	public String[] mCardStorage;
 	
 	private int numOfMatchedPairs = 0;
 	private int numOfFailedAttempts = 0;
+	
+	private static final int FIRST = 0;
+	private static final int SECOND = 1;
+	public CellModel[] mCardChecker = new CellModel[MAX_SELECTED_CARDS];
 	private int selectedCards = 0;
 	
 	public BoardModel() {
@@ -52,6 +62,95 @@ public class BoardModel extends java.util.Observable {
 		this.setNumOfFailedAttempts(numOfFailedAttempts);
 		this.setSelectedCards(selectedCards);
 	}
+	
+	
+	// This methods checks if 2 cards are the same
+	public boolean sameCellPosition() {
+		CellModel firstCell = this.mCardChecker[FIRST]; 
+		CellModel secondCell = this.mCardChecker[SECOND];
+
+		if (firstCell == null || secondCell == null) {
+			if (secondCell == firstCell) {
+				// They're equal if both are null
+				return true;
+			}
+	
+			if (firstCell == null) {
+				ErrorHandler.error("BoardModel: ", "sameCellPosition(Point, Point) received (null, ??)", true);
+			}
+			if (secondCell == null) {
+				ErrorHandler.error("BoardModel: ", "sameCellPosition(Point, Point) received (??, null)", true);
+			}
+		
+			return false;
+		}
+	
+		if (firstCell.equals(secondCell)) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	
+
+	// This method checks if a selected card is valid, the user isn't allowed to
+	// select blank cells again
+	public boolean isCardValid(CellModel aCard) {
+
+		if (aCard == null) {
+			ErrorHandler.error("Cell Model", "isCardValid(Cell) received null", false);
+			return false;
+		}
+	
+		if (!aCard.isEmpty()) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+	
+	// This method returns the location of a Cell object on the board
+	public CellModel getCellAtLoc(int row, int col) {
+		return mBoard[row][col];
+	}
+	
+ /**
+  * This method checks if the board is solved or not.
+  * 
+  * @return true if the board is solved, false if there remains cards that
+  *         have to be matched
+  */
+	public boolean isSolved() {		
+		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				if (!mBoard[row][column].isEmpty()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	 /**
+	  * This method adds a selected card to the chosen card list
+	  * 
+	  * @param aCard
+	  *            is the card to be added to the list
+	  */
+
+	public void addToChose(CellModel aCard) {
+
+		if (aCard != null) {
+			if (!chosenCards.contains(aCard)) {
+				chosenCards.add(aCard);
+			}
+		} else {
+			ErrorHandler.error("Board Model","addToChose( Cell ) received null.", true);
+		}
+	}
+	
 	
 	
 	public void setEmptyCardType(int row, int col) {
@@ -144,9 +243,14 @@ public class BoardModel extends java.util.Observable {
 		}
 	}
 	
+	// This method sets a card to visible at a certain location
+	public void setCardToVisible(int x, int y) {
+		mBoard[x][y].setSelected(true);
+	}
+
 	
 	// This method resets the number of selected cards to 0 after 2 cards have been chosen and checked
-	private void resetSelectedCards() {
+	public void resetSelectedCards() {
 		selectedCards = 0;
 	}
 	
@@ -178,13 +282,26 @@ public class BoardModel extends java.util.Observable {
 				new BoardModelNotification(ActionsBoardModel.setNumOfMatchedPairs, this)
 				);
 	}
+	public void incrementNumOfMatchedPairs() {
+		this.numOfMatchedPairs = this.numOfMatchedPairs +1 ;
+		setChanged();
+		notifyObservers(
+				new BoardModelNotification(ActionsBoardModel.setNumOfMatchedPairs, this)
+				);
+	}
 
 	public int getNumOfFailedAttempts() {
 		return numOfFailedAttempts;
 	}
-
 	public void setNumOfFailedAttempts(int numOfFailedAttempts) {
 		this.numOfFailedAttempts = numOfFailedAttempts;
+		setChanged();
+		notifyObservers(
+				new BoardModelNotification(ActionsBoardModel.setNumOfFailedAttempts, this)
+				);
+	}
+	public void incremenetNumOfFailedAttempts() {
+		this.numOfFailedAttempts = this.numOfFailedAttempts + 1;
 		setChanged();
 		notifyObservers(
 				new BoardModelNotification(ActionsBoardModel.setNumOfFailedAttempts, this)
@@ -202,6 +319,20 @@ public class BoardModel extends java.util.Observable {
 				new BoardModelNotification(ActionsBoardModel.setSelectedCards, this)
 				);
 	}
+	public void incrementSelectedCards() {
+		this.selectedCards = this.selectedCards + 1;
+		setChanged();
+		notifyObservers(
+				new BoardModelNotification(ActionsBoardModel.setSelectedCards, this)
+				);
+	}
+	public void decrementSelectedCards() {
+		this.selectedCards = this.selectedCards - 1;
+		setChanged();
+		notifyObservers(
+				new BoardModelNotification(ActionsBoardModel.setSelectedCards, this)
+				);
+	}
 
 	public CellModel[][] getmBoard() {
 		return mBoard;
@@ -210,6 +341,8 @@ public class BoardModel extends java.util.Observable {
 	public void setmBoard(CellModel[][] mBoard) {
 		this.mBoard = mBoard;
 	}
+	
+	
 	
 
 	

@@ -1,14 +1,20 @@
 package com.delgadotrueba.game2.controllers;
 
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
 import com.delgadotrueba.game2.errors.ErrorHandler;
 import com.delgadotrueba.game2.models.BoardModel;
+import com.delgadotrueba.game2.models.CellModel;
 import com.delgadotrueba.game2.models.Model;
 import javax.swing.Action;
+import javax.swing.JButton;
+
 import com.delgadotrueba.game2.views.BoardView;
+import com.delgadotrueba.game2.views.CellView;
+
 import javax.swing.Timer;
 import com.delgadotrueba.game2.views.View;
 
@@ -25,8 +31,51 @@ public class BoardController implements java.awt.event.ActionListener {
 	} 
 
 	//invoked when a button is pressed
+	 /**
+	  * This method is the action performed when a card is clicked it represents
+	  * the main user interface of the game
+	  * 
+	  * @param e
+	  *            an ActionEvent
+	  */
+	
 	public void actionPerformed(java.awt.event.ActionEvent e){
-		//model.incrementValue();
+
+		if (e == null) {
+		   ErrorHandler.error("BoardController: ", "actionPermormed(ActionEvent) received null", false);
+		   return;
+		}
+
+		// Flush out cases where we don't care
+		if (!(e.getSource() instanceof JButton)) {
+			return;
+		}
+
+		CellView cellView = (CellView) e.getSource();
+		CellModel cellModel = this.model.mBoard[cellView.getRow()][cellView.getColumn()];
+  		if (!this.model.isCardValid(cellModel)) {
+  			return;
+  		}
+
+  		// Proceed with cases we want to cover
+  		this.model.incrementSelectedCards();
+
+  		if (this.model.getSelectedCards() <= BoardModel.getMaxSelectedCards()) {
+  			this.model.setCardToVisible(cellView.getRow(), cellView.getColumn());
+  			this.showCardImages();
+  			this.model.mCardChecker[this.model.getSelectedCards() - 1] = this.model.getCellAtLoc(cellView.getRow(), cellView.getColumn());
+  			this.model.addToChose(this.model.getCellAtLoc(cellView.getRow(), cellView.getColumn()));
+  		}
+  		if (this.model.getSelectedCards() == BoardModel.getMaxSelectedCards() ) {
+
+  			if (!this.model.sameCellPosition()) {
+///////////////////setSelectedCards(this.model.mCardChecker[FIRST], mCardChecker[SECOND]);
+  				setSelectedCards(this.model.mCardChecker[0], this.model.mCardChecker[1]);
+  			} else {
+  				this.model.decrementSelectedCards();
+  			}
+	  } // if selectedCards == MAX
+	
 	}
 
 	public void addModel(BoardModel m){
@@ -62,6 +111,68 @@ public class BoardController implements java.awt.event.ActionListener {
 		 this.peek();
 		 this.setImages();
 	 }
+	 
+	// This method check if any 2 selected cards are the same so it replaces
+	// them with a blank cell or if they're different it flips them back,
+	// it also check if the board is solved
+	private void setSelectedCards(CellModel firstCell, CellModel secondCell) {
+
+		if (firstCell == null || secondCell == null) {
+	
+			if (firstCell == null) {
+				ErrorHandler.error("BoardModel: ","setSelectedCards(Cell, Cell) received (null, ??)", true);
+			}
+			if (secondCell == null) {
+				ErrorHandler.error("BoardModel: ", "setSelectedCards(Cell, Cell) received (??, null)", true);
+			}
+			return;
+		}
+	
+		if (firstCell.sameType(secondCell)) {
+	
+			firstCell.setMatched(true);
+			secondCell.setMatched(true);
+			firstCell.setSelected(false);
+			secondCell.setSelected(false);
+			showImage(getCellLocation(secondCell).x, getCellLocation(secondCell).y);
+			peek();
+			this.model.incrementNumOfMatchedPairs();
+///////////////////////////////
+			//finalMessage();
+		} else {
+	
+			firstCell.setMatched(false);
+			secondCell.setMatched(false);
+			firstCell.setSelected(false);
+			secondCell.setSelected(false);
+			showImage(getCellLocation(secondCell).x, getCellLocation(secondCell).y);
+			peek();
+			this.model.incremenetNumOfFailedAttempts();
+		}
+		this.model.resetSelectedCards();
+	}
+	
+	// This method gets the location of a cell on the board and returns that
+	// specific point
+	private Point getCellLocation(CellModel aCell) {
+
+		if (aCell == null) {
+			ErrorHandler.error("Board Controller","getCellLocation(Cell) received null", true);
+			return null;
+		}
+	
+		Point p = new Point();
+	
+		for (int column = 0; column < NUMBER_OF_ROWS; column++) {
+			for (int row = 0; row < NUMBER_OF_COLUMNS; row++) {
+				if (this.model.mBoard[column][row] == aCell) {
+					p.setLocation(column, row);
+					return p;
+				}
+			} // row for
+		} // column for
+		return null;
+	}
 	 
 	// This method sets all the images on the board
 		private void showCardImages() {
@@ -131,4 +242,6 @@ public class BoardController implements java.awt.event.ActionListener {
 				} // column loop
 			} // row loop
 		}
+		
+		
 }

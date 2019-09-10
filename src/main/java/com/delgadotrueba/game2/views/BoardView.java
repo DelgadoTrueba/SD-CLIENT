@@ -43,7 +43,7 @@ public class BoardView implements java.util.Observer{
 	 private static final String HIDDEN_IMAGE_PATH = DEFAULT_IMAGE_FOLDER + DEFAULT_IMAGE_FILENAME_PREFIX + "26" + DEFAULT_IMAGE_FILENAME_SUFFIX;
 	 private static final String EMPTY_IMAGE_PATH = DEFAULT_IMAGE_FOLDER + DEFAULT_IMAGE_FILENAME_PREFIX + "25" + DEFAULT_IMAGE_FILENAME_SUFFIX;
 	 
-	 public JButton[][] btnBoard;
+	 public CellView[][] btnBoard;
 	 public JButton btnNumOfMatchedPairs;
 	 public JButton btnNumOfFailedAttempts;
 	 public JButton btnSelectedCards;
@@ -72,11 +72,11 @@ public class BoardView implements java.util.Observer{
 		jpanel.setBorder(BorderFactory.createEmptyBorder(BOARD_BORDER_WIDTH, BOARD_BORDER_WIDTH, BOARD_BORDER_WIDTH, BOARD_BORDER_WIDTH));
 		jpanel.setLayout(new GridLayout(NUMBER_OF_ROWS, NUMBER_OF_COLUMNS));
 
-		btnBoard = new JButton[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
+		btnBoard = new CellView[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
 
 		  for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 		   for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
-			   btnBoard[row][column] = new JButton();
+			   btnBoard[row][column] = new CellView(row, column);
 			   jpanel.add(btnBoard[row][column]);
 		   }
 		  }
@@ -124,18 +124,21 @@ public class BoardView implements java.util.Observer{
 			this.btnNumOfMatchedPairs.setText("numOfMatchedPairs: " + num);
 		}
 		if(obs instanceof BoardModel && ActionsBoardModel.setNumOfFailedAttempts.equals(notification.action)) {
-			int num = notification.model.getNumOfMatchedPairs();
+			int num = notification.model.getNumOfFailedAttempts();
 			this.btnNumOfFailedAttempts.setText("numOfFailedAttempts: " + num);
 		}
 		if(obs instanceof BoardModel && ActionsBoardModel.setSelectedCards.equals(notification.action)) {
-			int num = notification.model.getNumOfMatchedPairs();
+			int num = notification.model.getSelectedCards();
 			this.btnSelectedCards.setText("selectedCards: " + num);
 		}
-	
 	} 
 
 	public void addController(ActionListener controller){
-		//button.addActionListener(controller);	//need instance of controller before can add it as a listener 
+		 for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			 for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				 btnBoard[row][column].addActionListener(controller);	//need instance of controller before can add it as a listener 
+			 }
+		 }
 	}
 
 	public void setValue(int v){
