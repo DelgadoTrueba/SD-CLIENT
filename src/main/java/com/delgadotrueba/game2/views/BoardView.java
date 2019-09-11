@@ -38,9 +38,9 @@ public class BoardView implements java.util.Observer{
 		JPanel jpanel2 = new JPanel();
 		jpanel2.setLayout(new GridLayout(1, 3));
 				
-	    btnNumOfMatchedPairs = new JButton("numOfMatchedPairs: X");
-	    btnNumOfFailedAttempts = new JButton("numOfFailedAttempts: X");
-	    btnSelectedCards = new JButton("selectedCards: X");
+	    btnNumOfMatchedPairs = new JButton("numOfMatchedPairs: 0");
+	    btnNumOfFailedAttempts = new JButton("numOfFailedAttempts: 0");
+	    btnSelectedCards = new JButton("selectedCards: 0");
 
 		jpanel2.add(btnNumOfMatchedPairs);
 		jpanel2.add(btnNumOfFailedAttempts);
@@ -117,18 +117,21 @@ public class BoardView implements java.util.Observer{
 			this.btnSelectedCards.setText("selectedCards: " + num);
 		}
 		
+		/*ESCONDE DOS CARTAS*/
 		if(obs instanceof BoardModel && ActionsBoardModel.setEmptyCardType.equals(notification.action)) {
 			int PEEK_DELAY = (int) 1 * 1000;
 			Timer timer = new Timer(PEEK_DELAY, e -> setEmptyImage( notification.row, notification.col));
 			timer.setRepeats(false);
 			timer.start();
 		}
+		/*ESCONDE DOS CARTAS*/
 		if(obs instanceof BoardModel && ActionsBoardModel.setHiddenCardType.equals(notification.action)) {
 			int PEEK_DELAY = (int) 1 * 1000;
 			Timer timer = new Timer(PEEK_DELAY, e -> setHiddenImage( notification.row, notification.col));
 			timer.setRepeats(false);
 			timer.start();
 		}
+		/*MUESTRA UNA CARTA*/
 		if(obs instanceof BoardModel && ActionsBoardModel.setCardType.equals(notification.action)) {
 			setImage( notification.row, notification.col, notification.type);
 		}
@@ -147,7 +150,7 @@ public class BoardView implements java.util.Observer{
 		this.btnBoard[row][col].setHiddenImage();
 	}
 	
-	//EVENTOS
+	//EVENTOS -> TAL VEZ SACARLOS FUERA
 	private class RetryBoard implements ActionListener {
 		 public void actionPerformed(ActionEvent e) {
 			 JOptionPane.showMessageDialog(null, "Init", "Info", JOptionPane.INFORMATION_MESSAGE);
