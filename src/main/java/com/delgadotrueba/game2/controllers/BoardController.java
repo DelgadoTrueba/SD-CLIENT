@@ -17,6 +17,8 @@ import javax.swing.JButton;
 
 import com.delgadotrueba.game2.views.BoardView;
 import com.delgadotrueba.game2.views.CellView;
+import com.delgadotrueba.game2.views.NewBoardButton;
+import com.delgadotrueba.game2.views.RetryButton;
 
 import javax.swing.Timer;
 import com.delgadotrueba.game2.views.View;
@@ -36,8 +38,12 @@ public class BoardController implements java.awt.event.ActionListener {
 	private int numSelectedCards = 0;
 	public CellWrapper[] selectedCards = new CellWrapper[MAX_SELECTED_CARDS];
 
-	private int numOfMatchedPairs = 0;
-	private int numOfFailedAttempts = 0;
+	private int numOfMatched_P1 = 0;
+	private int numOfMatched_P2 = 0;
+
+	
+	//TRUE = 1 FALSE = 2
+	private boolean playerPos = true;
 	
 	public BoardController() {	
 		// Must be empty
@@ -63,7 +69,7 @@ public class BoardController implements java.awt.event.ActionListener {
 		   ErrorHandler.error("BoardController: ", "actionPermormed(ActionEvent) received null", false);
 		   return;
 		}
-
+		
 		// Flush out cases where we don't care
 		if (!(e.getSource() instanceof CellView)) {
 			return;
@@ -76,6 +82,7 @@ public class BoardController implements java.awt.event.ActionListener {
   			return;
   		}
   		// START GAME
+  		
   		this.numSelectedCards = this.numSelectedCards + 1;
 
   		if ( this.numSelectedCards <= MAX_SELECTED_CARDS ) {  	
@@ -99,17 +106,20 @@ public class BoardController implements java.awt.event.ActionListener {
   				this.model.setCardMatched(firstCard.getRow(), firstCard.getColumn());
   				this.model.setCardMatched(secondCard.getRow(), secondCard.getColumn());
   				
-  				this.incrementNumOfMatchedPairs();
+  				this.incrementNumOfMatchedPairs(playerPos);
   				
   				if(model.isSolved()) {
-  					view.finalMessage();
+  					view.finalMessage(playerPos);
   				}
   			} else {
+  				
+  				this.view.showFail(playerPos);
   				
   				this.model.setCardHidden(firstCard.getRow(), firstCard.getColumn());
   				this.model.setCardHidden(secondCard.getRow(), secondCard.getColumn());
   				
-  				this.incremenetNumOfFailedAttempts();
+  				playerPos = !playerPos;
+  				this.view.showTurn(playerPos);
   			}
   			
   			this.numSelectedCards = 0;
@@ -120,12 +130,17 @@ public class BoardController implements java.awt.event.ActionListener {
 	 public void init() {
 		this.resetBoardParam();
 		this.model.initializeNewBoard();
+		this.view.hiddenImages();
+		this.view.showTurn(playerPos);
 	 }	
 	 
 	 /** This method reinitializes the board with the current set of cards i.e. replay */
 	 public void reInit() {
 		this.resetBoardParam();
 		this.model.reinitializeBoard();
+		this.view.hiddenImages();
+
+		this.view.showTurn(playerPos);
 	 }
 	 	// PRIVATE API
 	
@@ -135,28 +150,25 @@ public class BoardController implements java.awt.event.ActionListener {
 	}
 	
 	private void resetBoardParam() {
-		resetFailedAttempts();
 		resetNumMatchedPairs();
 	}
 	
 	private void resetNumMatchedPairs() {
-		numOfMatchedPairs = 0;
-		this.view.displayNumOfMatchedPairs(this.numOfMatchedPairs);
+		numOfMatched_P1 = 0;
+		numOfMatched_P2 = 0;
+		this.view.displayNumOfMatchedPairs_P1(numOfMatched_P1);
+		this.view.displayNumOfMatchedPairs_P2(numOfMatched_P2);
 	}
-	public void incrementNumOfMatchedPairs() {
-		this.numOfMatchedPairs = this.numOfMatchedPairs +1 ;
-		this.view.displayNumOfMatchedPairs(this.numOfMatchedPairs);
+	public void incrementNumOfMatchedPairs(boolean pos) {
+		if(pos) {
+			this.numOfMatched_P1 = this.numOfMatched_P1 +1 ;
+			this.view.displayNumOfMatchedPairs_P1(numOfMatched_P1);
+		}
+		else {
+			this.numOfMatched_P2 = this.numOfMatched_P2 +1 ;
+			this.view.displayNumOfMatchedPairs_P2(numOfMatched_P2);
+		}
 	}
-	
-	private void resetFailedAttempts() {
-		numOfFailedAttempts = 0;
-		this.view.displayNumOfFailedAttempts(this.numOfFailedAttempts);
-	}
-	public void incremenetNumOfFailedAttempts() {
-		this.numOfFailedAttempts = this.numOfFailedAttempts + 1;
-		this.view.displayNumOfFailedAttempts(this.numOfFailedAttempts);
-	}
-	
-	//WRAPPER
-			
+		//WRAPPER
+		
 }
