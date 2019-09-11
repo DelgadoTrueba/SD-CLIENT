@@ -11,23 +11,17 @@ public class BoardModelNotification {
 	/**/
 	public int row;
 	public int col;
-	public String type;
 
 	public BoardModelNotification(ActionsBoardModel action, BoardModel model) {
 		this.action = action;
 		this.model = model;
 	}
 	
-	public BoardModelNotification(ActionsBoardModel action, int row, int col) {
+	public BoardModelNotification(ActionsBoardModel action, BoardModel model, int row, int col) {
 		this.action = action;
+		this.model = model;
 		this.row = row;
 		this.col = col;
 	}
 	
-	public BoardModelNotification(ActionsBoardModel action, int row, int col, String type) {
-		this.action = action;
-		this.row = row;
-		this.col = col;
-		this.type = type;
-	}
 }

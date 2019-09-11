@@ -118,22 +118,23 @@ public class BoardView implements java.util.Observer{
 		}
 		
 		/*ESCONDE DOS CARTAS*/
-		if(obs instanceof BoardModel && ActionsBoardModel.setEmptyCardType.equals(notification.action)) {
+		if(obs instanceof BoardModel && ActionsBoardModel.setMatchedCard.equals(notification.action)) {
 			int PEEK_DELAY = (int) 1 * 1000;
-			Timer timer = new Timer(PEEK_DELAY, e -> setEmptyImage( notification.row, notification.col));
+			Timer timer = new Timer(PEEK_DELAY, e -> setMatchedImage( notification.row, notification.col));
 			timer.setRepeats(false);
 			timer.start();
 		}
 		/*ESCONDE DOS CARTAS*/
-		if(obs instanceof BoardModel && ActionsBoardModel.setHiddenCardType.equals(notification.action)) {
+		if(obs instanceof BoardModel && ActionsBoardModel.setHiddenCard.equals(notification.action)) {
 			int PEEK_DELAY = (int) 1 * 1000;
 			Timer timer = new Timer(PEEK_DELAY, e -> setHiddenImage( notification.row, notification.col));
 			timer.setRepeats(false);
 			timer.start();
 		}
 		/*MUESTRA UNA CARTA*/
-		if(obs instanceof BoardModel && ActionsBoardModel.setCardType.equals(notification.action)) {
-			setImage( notification.row, notification.col, notification.type);
+		if(obs instanceof BoardModel && ActionsBoardModel.setSelectedCard.equals(notification.action)) {
+			String type = notification.model.mBoard[notification.row][notification.col].getType();
+			setImage( notification.row, notification.col, type);
 		}
 	} 
 	
@@ -142,7 +143,7 @@ public class BoardView implements java.util.Observer{
 		this.btnBoard[row][col].setImage(num);
 	}
 	
-	public void setEmptyImage(int row, int col) {
+	public void setMatchedImage(int row, int col) {
 		this.btnBoard[row][col].setEmptyImage();
 	}
 	

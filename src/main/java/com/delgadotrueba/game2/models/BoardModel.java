@@ -21,15 +21,13 @@ public class BoardModel extends java.util.Observable {
 	private static final int MAX_SELECTED_CARDS = 2;
 		
 	// Card types
-	private static final int EMPTY_CELL_TYPE = 0;
-	private static final int HIDDEN_CARD_TYPE = 26;
-	private static final int EMPTY_CARD_TYPE = 25;
+	private static final String HIDDEN_CARD_TYPE = "26";
+	private static final String EMPTY_CARD_TYPE = "25";
 
 	private int numOfMatchedPairs = 0;
 	private int numOfFailedAttempts = 0;
 	
 	public CellModel[][] mBoard = null;
-	public String[] mCardStorage;
 		
 	private static final int FIRST = 0;
 	private static final int SECOND = 1;
@@ -38,22 +36,62 @@ public class BoardModel extends java.util.Observable {
 	public ArrayList<CellModel> chosenCards = new ArrayList<CellModel>();
 	
 	public BoardModel() {
-		mCardStorage = initCardStorage();
 		mBoard = new CellModel[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
+		
+		String[][] typeCell = initCardStorage();
 		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 			   for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
-				   mBoard[row][column] = new CellModel(EMPTY_CELL_TYPE);
+				   String type = typeCell[row][column];
+				   mBoard[row][column] = new CellModel(type);
 			   }
-	  }
+		}
 	}
-	
+		
 	public void initModel(int numOfMatchedPairs, int numOfFailedAttempts, int selectedCards ) {
 		//JButton[][] btnBoard;
 	}
 	
+	/** This method initializes the board with a new set of cards*/
+	public void initializeNewBoard() {
+		this.resetBoardParam();
+		this.resetMatchedAndSelectedAndTypeImages();
+	}
+	
+	/** This method reinitializes the board with the current set of cards i.e. replay */
+	public void reinitializeBoard() {
+		 this.resetBoardParam();
+		 this.resetMatchedAndSelectedImages();
+	}
+	
 	/*PRIVATE*/
-	public String[] initCardStorage() {
-		
+	private void resetBoardParam() {
+		resetFailedAttempts();
+		resetNumMatchedCards();
+	}
+
+	private void resetMatchedAndSelectedImages() {
+		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				mBoard[row][column].setMatched(false);
+				mBoard[row][column].setSelected(false);
+			}
+		}
+	}
+	
+	private void resetMatchedAndSelectedAndTypeImages() {
+		String[][] typeCell = initCardStorage();
+		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				mBoard[row][column].setMatched(false);
+				mBoard[row][column].setSelected(false);
+				String type = typeCell[row][column];
+				mBoard[row][column].setType(type);
+			}
+		}
+	}
+	
+	private String[][] initCardStorage() {
+		/*
 		String[] cardStorage = new String[MAX_NUM_OF_CARDS];
 		String[] firstPair = new String[NUMBER_OF_PAIRS];
 		String[] secondPair = new String[NUMBER_OF_PAIRS];
@@ -73,9 +111,18 @@ public class BoardModel extends java.util.Observable {
 		for (int k = NUMBER_OF_PAIRS; k < MAX_NUM_OF_CARDS; k++) {
 			cardStorage[k] = secondPair[k - NUMBER_OF_PAIRS];
 		}
+		
+		String[][] typeCell = new String[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
+				
+		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				typeCell[row][column] = cardStorage[column + (NUMBER_OF_COLUMNS * row)];
+			}
+		}
 	
-		return cardStorage;
-		//return new String[]{"01", "01","02", "02", "03", "03","04", "04", "05", "05","06", "06", "07", "07","08", "08", "09", "09","10", "10", "11", "11","12", "12"};
+		return typeCell;
+		*/
+		return new String[][]{{"01", "01","02", "02", "03", "03"},{"04", "04", "05", "05","06", "06"},{ "07", "07", "08", "08", "09", "09"},{"10", "10", "11", "11","12", "12"}};
 	}
 	
 	private String[] randomListWithoutRep() {
@@ -112,31 +159,11 @@ public class BoardModel extends java.util.Observable {
 	}
 	
 	/*PUBLIC*/
-	/*çççç*/
-	public void resetMatchedImages() {
-		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
-			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
-				if (mBoard[row][column].isMatched()) {
-					mBoard[row][column].setMatched(false);
-				}
-			}
-		}
-	}
-	
-	public void selectCard(int x, int y) {
-		mBoard[x][y].setSelected(true);
-	}
-
 	public void saveCard(CellModel cellModel) {
 		this.mCardChecker[this.selectedCards - 1] = cellModel;
 		this.addToChose(cellModel);
 	}
 	
-	public void resetBoardParam() {
-		resetFailedAttempts();
-		resetNumMatchedCards();
-	}
-
 	public boolean sameCellPosition() {
 		CellModel firstCell = this.mCardChecker[FIRST]; 
 		CellModel secondCell = this.mCardChecker[SECOND];
@@ -169,17 +196,17 @@ public class BoardModel extends java.util.Observable {
 			ErrorHandler.error("Cell Model", "isCardValid(Cell) received null", false);
 			return false;
 		}
-		if (!aCard.isEmpty()) {
-			return true;
-		} else {
+		if ( aCard.isMatched() || aCard.isSelected() ) {
 			return false;
 		}
+		
+		return true;
 	}
 	
 	public boolean isSolved() {	
 		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
-				if (!mBoard[row][column].isEmpty()) {
+				if (!mBoard[row][column].isMatched()) {
 					return false;
 				}
 			}
@@ -218,82 +245,70 @@ public class BoardModel extends java.util.Observable {
 		return mBoard[row][col];
 	}
 	
-	/*OBSERBABLES NOTIFY*/
-	public void setEmptyCardType(int row, int col) {
-		mBoard[row][col].setType(EMPTY_CARD_TYPE);
-		setChanged();
-		notifyObservers(
-				new BoardModelNotification(ActionsBoardModel.setEmptyCardType, row, col)
-				);
-	}
-	
-	public void setHiddenCardType(int row, int col) {
-		mBoard[row][col].setType(HIDDEN_CARD_TYPE);
-		setChanged();
-		notifyObservers(
-				new BoardModelNotification(ActionsBoardModel.setHiddenCardType, row, col)
-				);
-	}
-	
-	public void setCardType(int row, int col, String type) {
-		int parsedType = Integer.parseInt(type);
-		mBoard[row][col].setType(parsedType);
-		setChanged();
-		notifyObservers(
-				new BoardModelNotification(ActionsBoardModel.setCardType, row, col, type)
-				);
-	}
-	
+	/*OBSERBABLES NOTIFY*/	
 	private void resetNumMatchedCards() {
 		numOfMatchedPairs = 0;
 		setChanged();
-		notifyObservers(
-				new BoardModelNotification(ActionsBoardModel.setNumOfMatchedPairs, this)
-				);
+		notifyObservers(new BoardModelNotification(ActionsBoardModel.setNumOfMatchedPairs, this));
 	}
 	public void incrementNumOfMatchedPairs() {
 		this.numOfMatchedPairs = this.numOfMatchedPairs +1 ;
 		setChanged();
-		notifyObservers(
-				new BoardModelNotification(ActionsBoardModel.setNumOfMatchedPairs, this)
-				);
+		notifyObservers(new BoardModelNotification(ActionsBoardModel.setNumOfMatchedPairs, this));
 	}
 	
 	private void resetFailedAttempts() {
 		numOfFailedAttempts = 0;
 		setChanged();
-		notifyObservers(
-				new BoardModelNotification(ActionsBoardModel.setNumOfFailedAttempts, this)
-				);
+		notifyObservers(new BoardModelNotification(ActionsBoardModel.setNumOfFailedAttempts, this));
 	}
 	public void incremenetNumOfFailedAttempts() {
 		this.numOfFailedAttempts = this.numOfFailedAttempts + 1;
 		setChanged();
-		notifyObservers(
-				new BoardModelNotification(ActionsBoardModel.setNumOfFailedAttempts, this)
-				);
+		notifyObservers(new BoardModelNotification(ActionsBoardModel.setNumOfFailedAttempts, this));
 	}
 
 	public void incrementSelectedCards() {
 		this.selectedCards = this.selectedCards + 1;
 		setChanged();
-		notifyObservers(
-				new BoardModelNotification(ActionsBoardModel.setSelectedCards, this)
-				);
+		notifyObservers(new BoardModelNotification(ActionsBoardModel.setSelectedCards, this));
 	}
 	public void decrementSelectedCards() {
 		this.selectedCards = this.selectedCards - 1;
 		setChanged();
-		notifyObservers(
-				new BoardModelNotification(ActionsBoardModel.setSelectedCards, this)
-				);
+		notifyObservers(new BoardModelNotification(ActionsBoardModel.setSelectedCards, this));
 	}
 	public void resetSelectedCards() {
 		selectedCards = 0;
 		setChanged();
-		notifyObservers(
-				new BoardModelNotification(ActionsBoardModel.setSelectedCards, this)
-				);
+		notifyObservers(new BoardModelNotification(ActionsBoardModel.setSelectedCards, this));
+	}
+	
+	public void setCardHidden(int row, int col){
+		CellModel cellModel = this.mBoard[row][col];
+		cellModel.setMatched(false);
+		cellModel.setSelected(false);
+		
+		setChanged();
+		notifyObservers(new BoardModelNotification(ActionsBoardModel.setHiddenCard, this, row, col));
+	}
+	
+	public void setCardSelected(int row, int col){
+		CellModel cellModel = this.mBoard[row][col];
+		cellModel.setMatched(false);
+		cellModel.setSelected(true);
+		
+		setChanged();
+		notifyObservers(new BoardModelNotification(ActionsBoardModel.setSelectedCard, this, row, col));
+	}
+	
+	public void setCardMatched(int row, int col){
+		CellModel cellModel = this.mBoard[row][col];
+		cellModel.setMatched(true);
+		cellModel.setSelected(false);
+		
+		setChanged();
+		notifyObservers(new BoardModelNotification(ActionsBoardModel.setMatchedCard, this, row, col));
 	}
 
 	
@@ -310,5 +325,5 @@ public class BoardModel extends java.util.Observable {
 	public int getSelectedCards() {
 		return selectedCards;
 	}
-	
+		
 }

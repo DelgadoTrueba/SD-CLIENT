@@ -53,6 +53,7 @@ public class BoardController implements java.awt.event.ActionListener {
 
 		CellView cellView = (CellView) e.getSource();
 		CellModel cellModel = this.getCellModel(cellView);
+		
   		if (!this.model.isCardValid(cellModel)) {
   			return;
   		}
@@ -60,10 +61,8 @@ public class BoardController implements java.awt.event.ActionListener {
   		// START GAME
   		this.model.incrementSelectedCards();
 
-  		if ( this.model.isChoosable() ) {
-  			
-  			this.model.selectCard(cellView.getRow(), cellView.getColumn());
-  			this.setCardVisible(cellView.getRow(), cellView.getColumn());
+  		if ( this.model.isChoosable() ) {  			
+  			this.setCardSelected(cellView.getRow(), cellView.getColumn());
   			this.model.saveCard(cellModel);
   		}
 
@@ -78,29 +77,7 @@ public class BoardController implements java.awt.event.ActionListener {
   		}
 	
 	}
-
-	public void initModel(int numOfMatchedPairs, int numOfFailedAttempts, int selectedCards){
-		model.initModel(numOfMatchedPairs, numOfFailedAttempts, selectedCards);		
-		this.init();
-	}
 	
-	 /** This method initializes the board with a new set of cards*/
-	 public void init() {
-	 	this.model.resetMatchedImages();
-		this.model.resetBoardParam();
-		this.model.mCardStorage = this.model.initCardStorage();
-		this.showImagesForce();
-		this.hiddenImagesWithDelay();
-	 }	
-	 
-	 /** This method reinitializes the board with the current set of cards i.e. replay */
-	 public void reInit() {
-		 this.model.resetMatchedImages();
-		 this.model.resetBoardParam();
-		 this.showImagesForce();
-		 this.hiddenImagesWithDelay();
-	 }
-	 
 	// This method check if any 2 selected cards are the same: 
 	// so it replaces them with a blank cell or if they're different it flips them back,
 	// it also check if the board is solved
@@ -118,31 +95,19 @@ public class BoardController implements java.awt.event.ActionListener {
 		}
 	
 		if (firstCell.sameType(secondCell)) {
-	
-			firstCell.setMatched(true);
-			secondCell.setMatched(true);
-			firstCell.setSelected(false);
-			secondCell.setSelected(false);
-			
 			/**/
 			Point cell = getCellLocation(secondCell);
-			setCardVisible(cell.x, cell.y);
-			setCardsEmpty();
+			setCardSelected(cell.x, cell.y);
+			setCardsMatched();
 			if(model.isSolved()) {
 					view.finalMessage();
 			}
 			/**/
 			this.model.incrementNumOfMatchedPairs();
 		} else {
-			firstCell.setMatched(false);
-			secondCell.setMatched(false);
-			firstCell.setSelected(false);
-			secondCell.setSelected(false);
-			
 			/**/
 			Point cell = getCellLocation(secondCell);
-			setCardVisible(cell.x, cell.y);
-			setCardsEmpty();
+			setCardSelected(cell.x, cell.y);
 			setCardsHidden();
 			/**/
 
@@ -150,11 +115,29 @@ public class BoardController implements java.awt.event.ActionListener {
 		}
 		this.model.resetSelectedCards();
 	}
+
+	public void initModel(int numOfMatchedPairs, int numOfFailedAttempts, int selectedCards){
+		model.initModel(numOfMatchedPairs, numOfFailedAttempts, selectedCards);		
+		this.init();
+	}
+	
+	 /** This method initializes the board with a new set of cards*/
+	 public void init() {
+		this.model.initializeNewBoard();
+		this.showImagesForce();
+		this.hiddenImagesWithDelay();
+	 }	
+	 
+	 /** This method reinitializes the board with the current set of cards i.e. replay */
+	 public void reInit() {
+		 this.model.reinitializeBoard();
+		 this.showImagesForce();
+		 this.hiddenImagesWithDelay();
+	 }
 	 
 	// CHANGE MODEL AND REACT
-	private void setCardVisible(int row, int column) {
-			String type = this.model.mCardStorage[column + (NUMBER_OF_COLUMNS * row)];
-			this.model.setCardType(row, column, type);
+	private void setCardSelected(int row, int column) {  			
+			this.model.setCardSelected(row, column);
 	}
 	
 	private void setCardsHidden() {
@@ -164,19 +147,19 @@ public class BoardController implements java.awt.event.ActionListener {
 		Point p1 = this.getCellLocation(cellModel1);
 		Point p2 = this.getCellLocation(cellModel2);
 		
-		this.model.setHiddenCardType(p1.x, p1.y);
-		this.model.setHiddenCardType(p2.x, p2.y);
+		this.model.setCardHidden(p1.x, p1.y);
+		this.model.setCardHidden(p2.x, p2.y);
 	}
 	
-	private void setCardsEmpty() {
+	private void setCardsMatched() {
 		CellModel cellModel1 = this.model.mCardChecker[0];
 		CellModel cellModel2 = this.model.mCardChecker[1];
 		
 		Point p1 = this.getCellLocation(cellModel1);
 		Point p2 = this.getCellLocation(cellModel2);
 		
-		this.model.setEmptyCardType(p1.x, p1.y);
-		this.model.setEmptyCardType(p2.x, p2.y);
+		this.model.setCardMatched(p1.x, p1.y);
+		this.model.setCardMatched(p2.x, p2.y);
 	}
 	
 	//START & RE-START A GAME
@@ -209,8 +192,9 @@ public class BoardController implements java.awt.event.ActionListener {
 	private void showImagesForce() {
 		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {	
-				String num = this.model.mCardStorage[column + (NUMBER_OF_COLUMNS * row)];
-				this.view.setImage(row, column, num);
+				CellModel cellmodel = this.model.mBoard[row][column];
+				String type = cellmodel.getType();
+				this.view.setImage(row, column, type);
 			}
 		}
 	}
