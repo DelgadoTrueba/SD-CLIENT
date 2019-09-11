@@ -23,11 +23,11 @@ import com.delgadotrueba.game2.views.View;
 
 public class BoardController implements java.awt.event.ActionListener {
 	
-	private static final int NUMBER_OF_ROWS = 4;
-	private static final int NUMBER_OF_COLUMNS = 6;
-	
 	private BoardModel model;
 	private BoardView view;
+	
+	private static final int NUMBER_OF_ROWS = 4;
+	private static final int NUMBER_OF_COLUMNS = 6;
 	
 	private static final int MAX_SELECTED_CARDS = 2;
 	private static final int FIRST = 0;
@@ -36,6 +36,9 @@ public class BoardController implements java.awt.event.ActionListener {
 	private int numSelectedCards = 0;
 	public CellWrapper[] selectedCards = new CellWrapper[MAX_SELECTED_CARDS];
 
+	private int numOfMatchedPairs = 0;
+	private int numOfFailedAttempts = 0;
+	
 	public BoardController() {	
 		// Must be empty
 	} 
@@ -80,6 +83,7 @@ public class BoardController implements java.awt.event.ActionListener {
   	  		int col = cellView.getColumn();
   	  		
   			this.model.setCardSelected(row, col);
+  			
   			this.saveCard(cellModel, cellView);
   		}
 
@@ -94,7 +98,8 @@ public class BoardController implements java.awt.event.ActionListener {
   				
   				this.model.setCardMatched(firstCard.getRow(), firstCard.getColumn());
   				this.model.setCardMatched(secondCard.getRow(), secondCard.getColumn());
-  				this.model.incrementNumOfMatchedPairs();
+  				
+  				this.incrementNumOfMatchedPairs();
   				
   				if(model.isSolved()) {
   					view.finalMessage();
@@ -103,7 +108,8 @@ public class BoardController implements java.awt.event.ActionListener {
   				
   				this.model.setCardHidden(firstCard.getRow(), firstCard.getColumn());
   				this.model.setCardHidden(secondCard.getRow(), secondCard.getColumn());
-  				this.model.incremenetNumOfFailedAttempts();
+  				
+  				this.incremenetNumOfFailedAttempts();
   			}
   			
   			this.numSelectedCards = 0;
@@ -112,12 +118,14 @@ public class BoardController implements java.awt.event.ActionListener {
 	
 	 /** This method initializes the board with a new set of cards*/
 	 public void init() {
+		this.resetBoardParam();
 		this.model.initializeNewBoard();
 	 }	
 	 
 	 /** This method reinitializes the board with the current set of cards i.e. replay */
 	 public void reInit() {
-		 this.model.reinitializeBoard();
+		this.resetBoardParam();
+		this.model.reinitializeBoard();
 	 }
 	 	// PRIVATE API
 	
@@ -125,6 +133,30 @@ public class BoardController implements java.awt.event.ActionListener {
 	public void saveCard(CellModel cellModel, CellView cellView) {
 		this.selectedCards[this.numSelectedCards - 1] = new CellWrapper(cellModel, cellView);
 	}
+	
+	private void resetBoardParam() {
+		resetFailedAttempts();
+		resetNumMatchedPairs();
+	}
+	
+	private void resetNumMatchedPairs() {
+		numOfMatchedPairs = 0;
+		this.view.displayNumOfMatchedPairs(this.numOfMatchedPairs);
+	}
+	public void incrementNumOfMatchedPairs() {
+		this.numOfMatchedPairs = this.numOfMatchedPairs +1 ;
+		this.view.displayNumOfMatchedPairs(this.numOfMatchedPairs);
+	}
+	
+	private void resetFailedAttempts() {
+		numOfFailedAttempts = 0;
+		this.view.displayNumOfFailedAttempts(this.numOfFailedAttempts);
+	}
+	public void incremenetNumOfFailedAttempts() {
+		this.numOfFailedAttempts = this.numOfFailedAttempts + 1;
+		this.view.displayNumOfFailedAttempts(this.numOfFailedAttempts);
+	}
+	
 	//WRAPPER
 			
 }

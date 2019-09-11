@@ -20,9 +20,6 @@ public class BoardModel extends java.util.Observable {
 	
 	private static final int NUMBER_OF_PAIRS = MAX_NUM_OF_CARDS / 2;
 			
-	private int numOfMatchedPairs = 0;
-	private int numOfFailedAttempts = 0;
-	
 	public CellModel[][] mBoard = null;
 		
 	public BoardModel() {
@@ -43,22 +40,15 @@ public class BoardModel extends java.util.Observable {
 	
 	/** This method initializes the board with a new set of cards*/
 	public void initializeNewBoard() {
-		this.resetBoardParam();
 		this.resetMatchedAndSelectedAndTypeImages();
 	}
 	
 	/** This method reinitializes the board with the current set of cards i.e. replay */
 	public void reinitializeBoard() {
-		 this.resetBoardParam();
 		 this.resetMatchedAndSelectedImages();
 	}
 	
 	/*PRIVATE*/
-	private void resetBoardParam() {
-		resetFailedAttempts();
-		resetNumMatchedPairs();
-	}
-
 	private void resetMatchedAndSelectedImages() {
 		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
@@ -173,34 +163,6 @@ public class BoardModel extends java.util.Observable {
 	}
 	
 	/*OBSERBABLES NOTIFY*/	
-	private void resetNumMatchedPairs() {
-		numOfMatchedPairs = 0;
-		setChanged();
-		notifyObservers(new BoardModelNotification(ActionsBoardModel.setNumOfMatchedPairs, this));
-	}
-	public void incrementNumOfMatchedPairs() {
-		this.numOfMatchedPairs = this.numOfMatchedPairs +1 ;
-		setChanged();
-		notifyObservers(new BoardModelNotification(ActionsBoardModel.setNumOfMatchedPairs, this));
-	}
-	public int getNumOfMatchedPairs() {
-		return numOfMatchedPairs;
-	}
-	
-	private void resetFailedAttempts() {
-		numOfFailedAttempts = 0;
-		setChanged();
-		notifyObservers(new BoardModelNotification(ActionsBoardModel.setNumOfFailedAttempts, this));
-	}
-	public void incremenetNumOfFailedAttempts() {
-		this.numOfFailedAttempts = this.numOfFailedAttempts + 1;
-		setChanged();
-		notifyObservers(new BoardModelNotification(ActionsBoardModel.setNumOfFailedAttempts, this));
-	}
-	public int getNumOfFailedAttempts() {
-		return numOfFailedAttempts;
-	}
-	
 	public void setCardHidden(int row, int col){
 		CellModel cellModel = this.mBoard[row][col];
 		cellModel.setMatched(false);

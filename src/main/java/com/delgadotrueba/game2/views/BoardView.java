@@ -102,15 +102,7 @@ public class BoardView implements java.util.Observer{
 	public void update(Observable obs, Object obj) {
 	
 		BoardModelNotification notification = ((BoardModelNotification)obj);
-		
-		if(obs instanceof BoardModel && ActionsBoardModel.setNumOfMatchedPairs.equals(notification.action)) {
-			int num = notification.model.getNumOfMatchedPairs();
-			this.btnNumOfMatchedPairs.setText("numOfMatchedPairs: " + num);
-		}
-		if(obs instanceof BoardModel && ActionsBoardModel.setNumOfFailedAttempts.equals(notification.action)) {
-			int num = notification.model.getNumOfFailedAttempts();
-			this.btnNumOfFailedAttempts.setText("numOfFailedAttempts: " + num);
-		}
+	
 		/*ESCONDE DOS CARTAS*/
 		if(obs instanceof BoardModel && ActionsBoardModel.setMatchedCard.equals(notification.action)) {
 			int PEEK_DELAY = (int) 1 * 1000;
@@ -131,7 +123,15 @@ public class BoardView implements java.util.Observer{
 			setImage( notification.row, notification.col, type);
 		}
 	} 
+
+	//PUBLIC API
+	public void displayNumOfMatchedPairs(int num) {
+		this.btnNumOfMatchedPairs.setText("numOfMatchedPairs: " + num);
+	}
 	
+	public void displayNumOfFailedAttempts(int num) {
+		this.btnNumOfFailedAttempts.setText("numOfFailedAttempts: " + num);
+	}
 	//PRIVATE API
 	private void setImage(int row, int col, String num) {
 		this.btnBoard[row][col].setImage(num);
