@@ -1,4 +1,4 @@
-package com.delgadotrueba.game2.errors;
+package com.delgadotrueba.game2.utils;
 
 public class ErrorHandler {
 	

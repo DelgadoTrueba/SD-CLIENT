@@ -5,7 +5,7 @@ import java.io.File;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-import com.delgadotrueba.game2.errors.ErrorHandler;
+import com.delgadotrueba.game2.utils.ErrorHandler;
 
 public class CellView extends JButton{
 	

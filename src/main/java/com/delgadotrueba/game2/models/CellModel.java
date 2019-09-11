@@ -1,6 +1,6 @@
 package com.delgadotrueba.game2.models;
 
-import com.delgadotrueba.game2.errors.ErrorHandler;
+import com.delgadotrueba.game2.utils.ErrorHandler;
 
 public class CellModel {
 

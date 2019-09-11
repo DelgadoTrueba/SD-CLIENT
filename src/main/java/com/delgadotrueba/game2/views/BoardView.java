@@ -18,6 +18,7 @@ import javax.swing.JSplitPane;
 import javax.swing.Timer;
 
 import com.delgadotrueba.game2.models.BoardModel;
+import com.delgadotrueba.game2.models.CellModel;
 import com.delgadotrueba.game2.notifications.ActionsBoardModel;
 import com.delgadotrueba.game2.notifications.BoardModelNotification;
 
@@ -29,22 +30,19 @@ public class BoardView implements java.util.Observer{
 	 private CellView[][] btnBoard;
 	 private JButton btnNumOfMatchedPairs;
 	 private JButton btnNumOfFailedAttempts;
-	 private JButton btnSelectedCards;
 	 
 	 public BoardView() {
 		JFrame jframe = new JFrame("Memory Game. Sistemas Distribuidos");
 		
 		/**/
 		JPanel jpanel2 = new JPanel();
-		jpanel2.setLayout(new GridLayout(1, 3));
+		jpanel2.setLayout(new GridLayout(1, 2));
 				
 	    btnNumOfMatchedPairs = new JButton("numOfMatchedPairs: 0");
 	    btnNumOfFailedAttempts = new JButton("numOfFailedAttempts: 0");
-	    btnSelectedCards = new JButton("selectedCards: 0");
 
 		jpanel2.add(btnNumOfMatchedPairs);
 		jpanel2.add(btnNumOfFailedAttempts);
-		jpanel2.add(btnSelectedCards);
 
 		jframe.add(jpanel2, BorderLayout.BEFORE_FIRST_LINE);
 		/**/
@@ -62,6 +60,7 @@ public class BoardView implements java.util.Observer{
 		  for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 		   for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
 			   btnBoard[row][column] = new CellView(row, column);
+			   btnBoard[row][column].setHiddenImage();
 			   jpanel.add(btnBoard[row][column]);
 		   }
 		  }
@@ -112,11 +111,6 @@ public class BoardView implements java.util.Observer{
 			int num = notification.model.getNumOfFailedAttempts();
 			this.btnNumOfFailedAttempts.setText("numOfFailedAttempts: " + num);
 		}
-		if(obs instanceof BoardModel && ActionsBoardModel.setSelectedCards.equals(notification.action)) {
-			int num = notification.model.getSelectedCards();
-			this.btnSelectedCards.setText("selectedCards: " + num);
-		}
-		
 		/*ESCONDE DOS CARTAS*/
 		if(obs instanceof BoardModel && ActionsBoardModel.setMatchedCard.equals(notification.action)) {
 			int PEEK_DELAY = (int) 1 * 1000;
@@ -138,19 +132,19 @@ public class BoardView implements java.util.Observer{
 		}
 	} 
 	
-	//PUBLIC API
-	public void setImage(int row, int col, String num) {
+	//PRIVATE API
+	private void setImage(int row, int col, String num) {
 		this.btnBoard[row][col].setImage(num);
 	}
 	
-	public void setMatchedImage(int row, int col) {
+	private void setMatchedImage(int row, int col) {
 		this.btnBoard[row][col].setEmptyImage();
 	}
 	
-	public void setHiddenImage(int row, int col) {
+	private void setHiddenImage(int row, int col) {
 		this.btnBoard[row][col].setHiddenImage();
 	}
-	
+		
 	//EVENTOS -> TAL VEZ SACARLOS FUERA
 	private class RetryBoard implements ActionListener {
 		 public void actionPerformed(ActionEvent e) {
