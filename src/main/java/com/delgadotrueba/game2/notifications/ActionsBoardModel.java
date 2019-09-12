@@ -5,7 +5,5 @@ public enum ActionsBoardModel {
 	
 	setMatchedCard,
 	setHiddenCard,
-	setSelectedCard,
-	
-	solved,
+	setSelectedCard,	
 }

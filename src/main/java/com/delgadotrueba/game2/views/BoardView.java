@@ -4,21 +4,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.Observable;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSplitPane;
 import javax.swing.Timer;
+import javax.swing.WindowConstants;
 
 import com.delgadotrueba.game2.models.BoardModel;
-import com.delgadotrueba.game2.models.CellModel;
 import com.delgadotrueba.game2.notifications.ActionsBoardModel;
 import com.delgadotrueba.game2.notifications.BoardModelNotification;
 import com.delgadotrueba.game2.utils.Turn;
@@ -32,13 +27,9 @@ public class BoardView implements java.util.Observer{
 	 private JButton btnNumOfMatchedPairs_P1;
 	 private JButton btnNumOfMatchedPairs_P2;
 	 private JButton textInfo;
-	 
-	 private Turn turn;
-	 
-	 public BoardView(Turn turn) {
-		 
-		 this.turn = turn;
-		 
+	 	 
+	 public BoardView() {
+ 
 		JFrame jframe = new JFrame("Memory Game. Sistemas Distribuidos");
 		
 		/**/
@@ -101,6 +92,8 @@ public class BoardView implements java.util.Observer{
 		jframe.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		jframe.setResizable(true);
 		jframe.setVisible(true);		
+		
+		jframe.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	}
 	 
 	public void addController(ActionListener controller){
@@ -138,10 +131,6 @@ public class BoardView implements java.util.Observer{
 			String type = notification.model.mBoard[notification.row][notification.col].getType();
 			setImage( notification.row, notification.col, type);
 		}
-		
-		if(obs instanceof BoardModel && ActionsBoardModel.solved.equals(notification.action)) {
-			solvedMessage();
-		}
 	} 
 
 	//PUBLIC API
@@ -174,9 +163,13 @@ public class BoardView implements java.util.Observer{
 		this.btnBoard[row][col].setHiddenImage();
 	}
 		 
-	private void solvedMessage() {
-		 if(turn.isPlayerOne()) JOptionPane.showMessageDialog(null, "You WIN, CONGRATULATIONS !!!", "RESULT", JOptionPane.INFORMATION_MESSAGE);
-		 else JOptionPane.showMessageDialog(null, "You LOSE :( ", "RESULT", JOptionPane.INFORMATION_MESSAGE);
+	public void player1Win() {
+		JOptionPane.showMessageDialog(null, "You WIN, CONGRATULATIONS !!!", "RESULT", JOptionPane.INFORMATION_MESSAGE);
+		 System.exit(0);
+	}
+	
+	public void player1Lose() {
+		JOptionPane.showMessageDialog(null, "You LOSE :( ", "RESULT", JOptionPane.INFORMATION_MESSAGE);
 		 System.exit(0);
 	}
 	
@@ -184,14 +177,13 @@ public class BoardView implements java.util.Observer{
 		JOptionPane.showMessageDialog(null, "You must wait for your turn", "WAIT", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	public void showInfoText() {
-		if(turn.isPlayerOne()) {
+	public void showInfoTurnPlayer1() {
 			this.textInfo.setText("Tu turno elige un par de cartas !!!");
-		}
-		if(turn.isPlayerTwo()) {
-			this.textInfo.setText("Turno de tu rival. ESPERANDO SU RESPUESTA.");
-		}
+		
 	}
 	
+	public void showInfoTurnPlayer2() {
+			this.textInfo.setText("Turno de tu rival. ESPERANDO SU RESPUESTA.");
+	}
 		
 }

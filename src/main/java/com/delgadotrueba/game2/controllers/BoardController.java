@@ -1,37 +1,16 @@
 package com.delgadotrueba.game2.controllers;
 
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-
-import javax.swing.AbstractAction;
-
 import com.delgadotrueba.game2.models.BoardModel;
-import com.delgadotrueba.game2.models.CellModel;
-import com.delgadotrueba.game2.models.Model;
-import com.delgadotrueba.game2.utils.CellWrapper;
 import com.delgadotrueba.game2.utils.ErrorHandler;
 import com.delgadotrueba.game2.utils.Turn;
-
-import javax.swing.Action;
-import javax.swing.JButton;
-
 import com.delgadotrueba.game2.views.BoardView;
 import com.delgadotrueba.game2.views.CellView;
-import com.delgadotrueba.game2.views.NewBoardButton;
-import com.delgadotrueba.game2.views.RetryButton;
-
-import javax.swing.Timer;
-import com.delgadotrueba.game2.views.View;
 
 public class BoardController implements java.awt.event.ActionListener {
 	
 	private BoardModel model;
 	private BoardView view;
-	
-	private static final int NUMBER_OF_ROWS = 3;
-	private static final int NUMBER_OF_COLUMNS = 2;
-	
+		
 	private int numOfMatched_P1 = 0;
 	
 	private Turn turn;
@@ -49,8 +28,7 @@ public class BoardController implements java.awt.event.ActionListener {
 		this.view = v;
 	}
 	
-	public void initModel(int numOfMatchedPairs, int numOfFailedAttempts, int selectedCards){
-		//model.initModel(numOfMatchedPairs, numOfFailedAttempts, selectedCards);		
+	public void initModel(){		
 		this.init();
 	}
 
@@ -92,13 +70,16 @@ public class BoardController implements java.awt.event.ActionListener {
   				
   				this.incrementNumOfMatchedPairs();
   		  		
-  				this.model.isSolved();
+  				if(this.model.isSolved()) {
+  					this.view.player1Win();
+  				}
+  				
   			} else {
   				  				
   				this.model.setSelectedCardsHidden();
   				
   				this.turn.changeTurn();
-  				this.view.showInfoText();
+  				this.view.showInfoTurnPlayer2();
   			}
   			
   		}
@@ -111,8 +92,9 @@ public class BoardController implements java.awt.event.ActionListener {
 		this.model.initializeNewBoard();
 		this.view.hiddenImages();
 		
-		this.view.showInfoText();
-		
+		if ((turn.isPlayerTwo())) {
+			this.view.showInfoTurnPlayer2();
+		}
 	 }	
 	 
 	 /** This method reinitializes the board with the current set of cards i.e. replay */
@@ -121,7 +103,9 @@ public class BoardController implements java.awt.event.ActionListener {
 		this.model.reinitializeBoard();
 		this.view.hiddenImages();
 
-		this.view.showInfoText();
+		if ((turn.isPlayerTwo())) {
+			this.view.showInfoTurnPlayer2();
+		}
 	 }
 	 	// PRIVATE API
 	

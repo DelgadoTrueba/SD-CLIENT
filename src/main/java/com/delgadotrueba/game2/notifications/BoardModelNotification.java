@@ -1,7 +1,6 @@
 package com.delgadotrueba.game2.notifications;
 
 import com.delgadotrueba.game2.models.BoardModel;
-import com.delgadotrueba.game2.models.Model;
 
 public class BoardModelNotification {
 	public ActionsBoardModel action;

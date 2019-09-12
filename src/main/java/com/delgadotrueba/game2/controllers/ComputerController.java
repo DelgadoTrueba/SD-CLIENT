@@ -54,13 +54,16 @@ public class ComputerController extends Thread {
   				
   				this.incrementNumOfMatchedPairs();
   		  		
-  				this.model.isSolved();
+  				if(this.model.isSolved()) {
+  					this.view.player1Lose();
+  				}
+  				
   			} else {
   				  				
   				this.model.setSelectedCardsHidden();
   				
   				this.turn.changeTurn();
-  				this.view.showInfoText();
+				this.view.showInfoTurnPlayer1();
   			}
   			
   		}

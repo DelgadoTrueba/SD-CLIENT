@@ -9,6 +9,8 @@ import com.delgadotrueba.game2.utils.ErrorHandler;
 
 public class CellView extends JButton{
 	
+	private static final long serialVersionUID = 1L;
+	
 	// Card image file properties
 	private static final String DEFAULT_IMAGE_FILENAME_SUFFIX = ".jpg";
 	private static final String DEFAULT_IMAGE_FILENAME_PREFIX = "img-";

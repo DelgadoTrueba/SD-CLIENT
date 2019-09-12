@@ -9,9 +9,12 @@ import javax.swing.JButton;
 import com.delgadotrueba.game2.utils.ErrorHandler;
 
 public class IconPlayer extends JButton {
+
+	private static final long serialVersionUID = 1L;
+
 	// Card image file properties
-		private static final String DEFAULT_IMAGE_FILENAME_SUFFIX = ".png";
-		private static final String DEFAULT_IMAGE_FOLDER = "/images/";
+	private static final String DEFAULT_IMAGE_FILENAME_SUFFIX = ".png";
+	private static final String DEFAULT_IMAGE_FOLDER = "/images/";
 		 
 	 	private String icon;
 	 	

@@ -112,8 +112,6 @@ public class BoardModel extends java.util.Observable {
 				}
 			}
 		}
-		setChanged();
-		notifyObservers(new BoardModelNotification(ActionsBoardModel.solved));
 		return true;	
 	}
 	
@@ -160,7 +158,7 @@ public class BoardModel extends java.util.Observable {
 	// Private Interface	 
 	////////////////////////////////////////////////////////////////////////////
 	private String[][] initCardStorage() {
-		/*
+		
 		String[] cardStorage = new String[MAX_NUM_OF_CARDS];
 		String[] firstPair = new String[NUMBER_OF_PAIRS];
 		String[] secondPair = new String[NUMBER_OF_PAIRS];
@@ -190,8 +188,8 @@ public class BoardModel extends java.util.Observable {
 		}
 	
 		return typeCell;
-		*/
-		return new String[][]{{"01", "01","02", "02", "03", "03"},{"04", "04", "05", "05","06", "06"},{ "07", "07", "08", "08", "09", "09"},{"10", "10", "11", "11","12", "12"}};
+		
+		//return new String[][]{{"01", "01","02", "02", "03", "03"},{"04", "04", "05", "05","06", "06"},{ "07", "07", "08", "08", "09", "09"},{"10", "10", "11", "11","12", "12"}};
 	}
 	
 	private String[] randomListWithoutRep() {
