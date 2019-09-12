@@ -33,7 +33,6 @@ public class BoardController implements java.awt.event.ActionListener {
 	private static final int NUMBER_OF_COLUMNS = 2;
 	
 	private int numOfMatched_P1 = 0;
-	private int numOfMatched_P2 = 0;
 	
 	private Turn turn;
 	
@@ -98,8 +97,8 @@ public class BoardController implements java.awt.event.ActionListener {
   				  				
   				this.model.setSelectedCardsHidden();
   				
-  				this.view.showFail();
   				this.turn.changeTurn();
+  				this.view.showInfoText();
   			}
   			
   		}
@@ -111,7 +110,9 @@ public class BoardController implements java.awt.event.ActionListener {
 		this.resetBoardParam();
 		this.model.initializeNewBoard();
 		this.view.hiddenImages();
-		this.view.showTurn();
+		
+		this.view.showInfoText();
+		
 	 }	
 	 
 	 /** This method reinitializes the board with the current set of cards i.e. replay */
@@ -120,7 +121,7 @@ public class BoardController implements java.awt.event.ActionListener {
 		this.model.reinitializeBoard();
 		this.view.hiddenImages();
 
-		this.view.showTurn();
+		this.view.showInfoText();
 	 }
 	 	// PRIVATE API
 	
@@ -130,9 +131,7 @@ public class BoardController implements java.awt.event.ActionListener {
 	
 	private void resetNumMatchedPairs() {
 		numOfMatched_P1 = 0;
-		numOfMatched_P2 = 0;
 		this.view.displayNumOfMatchedPairs_P1(numOfMatched_P1);
-		this.view.displayNumOfMatchedPairs_P2(numOfMatched_P2);
 	}
 	public void incrementNumOfMatchedPairs() {
 		if(turn.isPlayerOne()) {

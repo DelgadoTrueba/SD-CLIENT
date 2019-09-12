@@ -31,6 +31,7 @@ public class BoardView implements java.util.Observer{
 	 private CellView[][] btnBoard;
 	 private JButton btnNumOfMatchedPairs_P1;
 	 private JButton btnNumOfMatchedPairs_P2;
+	 private JButton textInfo;
 	 
 	 private Turn turn;
 	 
@@ -82,19 +83,22 @@ public class BoardView implements java.util.Observer{
 		jframe.add(jpanel, BorderLayout.CENTER);
 		/**/
 		
-		JSplitPane mSplitPane = new JSplitPane();
-		jframe.add(mSplitPane, BorderLayout.SOUTH);
-	
-		RetryButton mRetryButton = new RetryButton("Retry");
-		mRetryButton.setFocusPainted(false);
-		mSplitPane.setLeftComponent(mRetryButton);
-	
-		NewBoardButton mNewButton = new NewBoardButton("New Game");
-		mNewButton.setFocusPainted(false);
-		mSplitPane.setRightComponent(mNewButton);
+		/**/
+		JPanel jpanel3 = new JPanel();
+		jpanel3.setLayout(new GridLayout(1, 2));
+		textInfo = new JButton();
 		
+		IconPlayer playerChoosen = new IconPlayer("boy");
+		playerChoosen.setText("You´re player 1");
+		jpanel3.add(textInfo);
+		jpanel3.add(playerChoosen);
+	
+		
+		jframe.add(jpanel3, BorderLayout.SOUTH);
+		/**/
+
 		jframe.pack();
-		jframe.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		jframe.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		jframe.setResizable(true);
 		jframe.setVisible(true);		
 	}
@@ -173,22 +177,21 @@ public class BoardView implements java.util.Observer{
 	private void solvedMessage() {
 		 if(turn.isPlayerOne()) JOptionPane.showMessageDialog(null, "You WIN, CONGRATULATIONS !!!", "RESULT", JOptionPane.INFORMATION_MESSAGE);
 		 else JOptionPane.showMessageDialog(null, "You LOSE :( ", "RESULT", JOptionPane.INFORMATION_MESSAGE);
+		 System.exit(0);
 	}
 	
 	public void notIsYourTurn() {
 		JOptionPane.showMessageDialog(null, "You must wait for your turn", "WAIT", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	public void showTurn() {
-		if(turn.isPlayerOne()) JOptionPane.showMessageDialog(null, "player1's turn.!!", "Player 2", JOptionPane.INFORMATION_MESSAGE);
-		else JOptionPane.showMessageDialog(null, "player2's turn.!!", "Player 2", JOptionPane.INFORMATION_MESSAGE);
-		
+	public void showInfoText() {
+		if(turn.isPlayerOne()) {
+			this.textInfo.setText("Tu turno elige un par de cartas !!!");
+		}
+		if(turn.isPlayerTwo()) {
+			this.textInfo.setText("Turno de tu rival. ESPERANDO SU RESPUESTA.");
+		}
 	}
 	
-	public void showFail() {
-		if(turn.isPlayerOne()) JOptionPane.showMessageDialog(null, "You Fail!!", "Fail", JOptionPane.INFORMATION_MESSAGE);
-		else JOptionPane.showMessageDialog(null, "Your Oponent Fail.!!", "Fail", JOptionPane.INFORMATION_MESSAGE);
-		 
-	}
 		
 }
