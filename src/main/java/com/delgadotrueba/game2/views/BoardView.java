@@ -152,10 +152,22 @@ public class BoardView implements java.util.Observer{
 	//PUBLIC API
 	public void displayNumOfMatchedPairs_P1(int num) {
 		this.btnNumOfMatchedPairs_P1.setText(""+num);
+		
+		this.btnNumOfMatchedPairs_P1.setBackground(new JButton().getBackground());
+		int PEEK_DELAY = (int) 1 * 500;
+		Timer timer = new Timer(PEEK_DELAY, e -> this.btnNumOfMatchedPairs_P1.setBackground(Color.CYAN));
+		timer.setRepeats(false);
+		timer.start();
 	}
 	
 	public void displayNumOfMatchedPairs_P2(int num) {
 		this.btnNumOfMatchedPairs_P2.setText(""+num);
+		
+		this.btnNumOfMatchedPairs_P2.setBackground(new JButton().getBackground());
+		int PEEK_DELAY = (int) 1 * 500;
+		Timer timer = new Timer(PEEK_DELAY, e -> this.btnNumOfMatchedPairs_P2.setBackground(Color.cyan));
+		timer.setRepeats(false);
+		timer.start();
 	}
 	
 	public void hiddenImages() {
