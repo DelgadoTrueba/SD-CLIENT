@@ -112,8 +112,15 @@ public class BoardView implements java.util.Observer{
 	public void update(Observable obs, Object obj) {
 	
 		BoardModelNotification notification = ((BoardModelNotification)obj);
-	
+		int row, col;
+		
 		if(obs instanceof BoardModel && ActionsBoardModel.setMatchedCard.equals(notification.action)) {
+			row = notification.row;
+			col = notification.col;
+			
+			
+			this.btnBoard[row][col].setBackground(Color.GREEN);
+			
 			int PEEK_DELAY = (int) 1 * 1000;
 			Timer timer = new Timer(PEEK_DELAY, e -> setMatchedImage( notification.row, notification.col));
 			timer.setRepeats(false);
@@ -121,10 +128,19 @@ public class BoardView implements java.util.Observer{
 		}
 	
 		if(obs instanceof BoardModel && ActionsBoardModel.setHiddenCard.equals(notification.action)) {
+			
+			row = notification.row;
+			col = notification.col;
+			
+			
+			this.btnBoard[row][col].setBackground(Color.RED);
+			
 			int PEEK_DELAY = (int) 1 * 1000;
-			Timer timer = new Timer(PEEK_DELAY, e -> setHiddenImage( notification.row, notification.col));
+			Timer timer = new Timer(PEEK_DELAY, e -> setHiddenImage(notification.row, notification.col));
 			timer.setRepeats(false);
 			timer.start();
+			
+			
 		}
 	
 		if(obs instanceof BoardModel && ActionsBoardModel.setSelectedCard.equals(notification.action)) {
@@ -161,6 +177,7 @@ public class BoardView implements java.util.Observer{
 	
 	private void setHiddenImage(int row, int col) {
 		this.btnBoard[row][col].setHiddenImage();
+		this.btnBoard[row][col].setBackground(new JButton().getBackground());
 	}
 		 
 	public void player1Win() {
@@ -178,8 +195,8 @@ public class BoardView implements java.util.Observer{
 	}
 	
 	public void showInfoTurnPlayer1() {
-			this.textInfo.setText("Tu turno elige un par de cartas !!!");
-		
+		JOptionPane.showMessageDialog(null, "Tu turno elige un par de cartas !!!", "Your Turn", JOptionPane.INFORMATION_MESSAGE);
+		this.textInfo.setText("Tu turno elige un par de cartas !!!");
 	}
 	
 	public void showInfoTurnPlayer2() {
