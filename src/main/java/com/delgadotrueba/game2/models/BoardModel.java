@@ -12,14 +12,18 @@ import com.delgadotrueba.game2.utils.ErrorHandler;
 public class BoardModel extends java.util.Observable {
 	
 	//SIEMPRE DEBE DE DAR UNA MATRIZ PAR
-	private static final int NUMBER_OF_ROWS = 4;
-	private static final int NUMBER_OF_COLUMNS = 6;
+	private static final int NUMBER_OF_ROWS = 3;
+	private static final int NUMBER_OF_COLUMNS = 2;
 	
+	//GENERAR CELL TYPE => IMAGEN CORRESPONDIENTE
 	private static final int MIN_NUM_OF_CARDS = 1;
 	private static final int MAX_NUM_OF_CARDS = NUMBER_OF_ROWS * NUMBER_OF_COLUMNS;
-	
 	private static final int NUMBER_OF_PAIRS = MAX_NUM_OF_CARDS / 2;
 			
+	private static final int FIRST = 0;
+	private static final int SECOND = 1;
+	private static final int MAX_SELECTED_CARDS = 2;
+	
 	public CellModel[][] mBoard = null;
 		
 	public BoardModel() {
@@ -38,39 +42,125 @@ public class BoardModel extends java.util.Observable {
 		//JButton[][] btnBoard;
 	}
 	
+	////////////////////////////////////////////////////////////////////////////
+	// Public Interface	 
+	////////////////////////////////////////////////////////////////////////////
+	
 	/** This method initializes the board with a new set of cards*/
 	public void initializeNewBoard() {
-		this.resetMatchedAndSelectedAndTypeImages();
+		this.resetMatchedAndSelectedAndTypeCards();
 	}
 	
 	/** This method reinitializes the board with the current set of cards i.e. replay */
 	public void reinitializeBoard() {
-		 this.resetMatchedAndSelectedImages();
+		 this.resetMatchedAndSelectedCards();
+	}
+		
+	public boolean isCardValid(int row, int col) {
+		// ES UNA POSICIÓN VALIDA DE LA MATRIZ
+		if ( !coordenatesValid(row, col) ) {
+			ErrorHandler.error("BoardModel Model", "isCardValid(Cell) received null", false);
+			return false;
+		}
+		
+		// NO ESTA SELECCIONADA NI EMPAREJADA
+		CellModel aCard = this.mBoard[row][col];
+		if ( aCard.isMatched() || aCard.isSelected() ) {
+			return false;
+		}
+		return true;
 	}
 	
-	/*PRIVATE*/
-	private void resetMatchedAndSelectedImages() {
+	public boolean areSelectedCardsSameType() {
+		CellModel[] cellModelArray = new CellModel[MAX_SELECTED_CARDS];
+		int pos = 0;
 		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
-				mBoard[row][column].setMatched(false);
-				mBoard[row][column].setSelected(false);
+				if (mBoard[row][column].isSelected()) {
+					cellModelArray[pos] = this.mBoard[row][column];
+					pos++;
+				}
+			}
+		}
+		
+		CellModel fisrtCard = cellModelArray[FIRST];
+		CellModel secondCard = cellModelArray[SECOND];
+
+		if ( !fisrtCard.sameType(secondCard) ) {
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean isPlayable() {
+		int numOfSelectedCards = 0;
+		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				if (mBoard[row][column].isSelected()) {
+					numOfSelectedCards++;
+				}
+			}
+		}
+		return numOfSelectedCards == MAX_SELECTED_CARDS;
+	}
+	
+	public boolean isSolved() {	
+		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				if (!mBoard[row][column].isMatched()) {
+					return false;
+				}
+			}
+		}
+		setChanged();
+		notifyObservers(new BoardModelNotification(ActionsBoardModel.solved));
+		return true;	
+	}
+	
+	public void setCardSelected(int row, int col){
+		CellModel cellModel = this.mBoard[row][col];
+		cellModel.setMatched(false);
+		cellModel.setSelected(true);
+		
+		setChanged();
+		notifyObservers(new BoardModelNotification(ActionsBoardModel.setSelectedCard, this, row, col));
+	}
+	
+	public void setSelectedCardsHidden() {
+		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				if(mBoard[row][column].isSelected()) {
+					CellModel cellModel = this.mBoard[row][column];
+					cellModel.setMatched(false);
+					cellModel.setSelected(false);
+					
+					setChanged();
+					notifyObservers(new BoardModelNotification(ActionsBoardModel.setHiddenCard, this, row, column));
+				}
 			}
 		}
 	}
 	
-	private void resetMatchedAndSelectedAndTypeImages() {
-		String[][] typeCell = initCardStorage();
+	public void setSelectedCardsMatched() {
 		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
-				mBoard[row][column].setMatched(false);
-				mBoard[row][column].setSelected(false);
-				String type = typeCell[row][column];
-				mBoard[row][column].setType(type);
+				if(mBoard[row][column].isSelected()) {
+					CellModel cellModel = this.mBoard[row][column];
+					cellModel.setMatched(true);
+					cellModel.setSelected(false);
+					
+					setChanged();
+					notifyObservers(new BoardModelNotification(ActionsBoardModel.setMatchedCard, this, row, column));
+				}
 			}
 		}
 	}
-	
+		
+	////////////////////////////////////////////////////////////////////////////
+	// Private Interface	 
+	////////////////////////////////////////////////////////////////////////////
 	private String[][] initCardStorage() {
+		/*
 		String[] cardStorage = new String[MAX_NUM_OF_CARDS];
 		String[] firstPair = new String[NUMBER_OF_PAIRS];
 		String[] secondPair = new String[NUMBER_OF_PAIRS];
@@ -100,8 +190,8 @@ public class BoardModel extends java.util.Observable {
 		}
 	
 		return typeCell;
-		
-		//return new String[][]{{"01", "01","02", "02", "03", "03"},{"04", "04", "05", "05","06", "06"},{ "07", "07", "08", "08", "09", "09"},{"10", "10", "11", "11","12", "12"}};
+		*/
+		return new String[][]{{"01", "01","02", "02", "03", "03"},{"04", "04", "05", "05","06", "06"},{ "07", "07", "08", "08", "09", "09"},{"10", "10", "11", "11","12", "12"}};
 	}
 	
 	private String[] randomListWithoutRep() {
@@ -137,61 +227,33 @@ public class BoardModel extends java.util.Observable {
 		}
 	}
 	
-	/*PUBLIC*/
-	public boolean isCardValid(CellModel aCard) {
-		if (aCard == null) {
-			ErrorHandler.error("Cell Model", "isCardValid(Cell) received null", false);
-			return false;
-		}
-		if ( aCard.isMatched() || aCard.isSelected() ) {
-			return false;
-		}
-		
-		return true;
-	}
-	
-	public boolean isSolved() {	
+	private void resetMatchedAndSelectedCards() {
 		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
-				if (!mBoard[row][column].isMatched()) {
-					return false;
-				}
+				mBoard[row][column].setMatched(false);
+				mBoard[row][column].setSelected(false);
 			}
 		}
-		return true;	
 	}
 	
-	/*OBSERBABLES NOTIFY*/	
-	public void setCardHidden(int row, int col){
-		CellModel cellModel = this.mBoard[row][col];
-		cellModel.setMatched(false);
-		cellModel.setSelected(false);
-		
-		setChanged();
-		notifyObservers(new BoardModelNotification(ActionsBoardModel.setHiddenCard, this, row, col));
+	private void resetMatchedAndSelectedAndTypeCards() {
+		String[][] typeCell = initCardStorage();
+		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				mBoard[row][column].setMatched(false);
+				mBoard[row][column].setSelected(false);
+				String type = typeCell[row][column];
+				mBoard[row][column].setType(type);
+			}
+		}
 	}
 	
-	public void setCardSelected(int row, int col){
-		CellModel cellModel = this.mBoard[row][col];
-		cellModel.setMatched(false);
-		cellModel.setSelected(true);
-		
-		setChanged();
-		notifyObservers(new BoardModelNotification(ActionsBoardModel.setSelectedCard, this, row, col));
+	private boolean coordenatesValid(int row, int col) {
+		if(row < 0 || row >= NUMBER_OF_ROWS || col < 0 || col >= NUMBER_OF_COLUMNS) {
+			return false;
+		}
+		else{
+			return true;
+		}
 	}
-	
-	public void setCardMatched(int row, int col){
-		CellModel cellModel = this.mBoard[row][col];
-		cellModel.setMatched(true);
-		cellModel.setSelected(false);
-		
-		setChanged();
-		notifyObservers(new BoardModelNotification(ActionsBoardModel.setMatchedCard, this, row, col));
-	}
-
-	//GETTERS	
-	public CellModel getCellModel(int row, int col) {
-		return mBoard[row][col];
-	}
-		
 }

@@ -21,32 +21,34 @@ import com.delgadotrueba.game2.models.BoardModel;
 import com.delgadotrueba.game2.models.CellModel;
 import com.delgadotrueba.game2.notifications.ActionsBoardModel;
 import com.delgadotrueba.game2.notifications.BoardModelNotification;
+import com.delgadotrueba.game2.utils.Turn;
 
 public class BoardView implements java.util.Observer{
 	
-	 private static final int NUMBER_OF_ROWS = 4;
-	 private static final int NUMBER_OF_COLUMNS = 6;
+	 private static final int NUMBER_OF_ROWS = 3;
+	 private static final int NUMBER_OF_COLUMNS = 2;
 	   
 	 private CellView[][] btnBoard;
 	 private JButton btnNumOfMatchedPairs_P1;
 	 private JButton btnNumOfMatchedPairs_P2;
 	 
-	 public BoardView() {
+	 private Turn turn;
+	 
+	 public BoardView(Turn turn) {
+		 
+		 this.turn = turn;
+		 
 		JFrame jframe = new JFrame("Memory Game. Sistemas Distribuidos");
 		
 		/**/
 		JPanel jpanel2 = new JPanel();
 		jpanel2.setLayout(new GridLayout(1, 4));
 			
-		Player player1 = new Player(1);
-		player1.setImage();
-		player1.setBackground(Color.CYAN);
+		IconPlayer player1 = new IconPlayer("boy");
 	    btnNumOfMatchedPairs_P1 = new JButton("0");
 	    btnNumOfMatchedPairs_P1.setBackground(Color.CYAN);
-	
-	    Player player2 = new Player(2);
-		player2.setImage();
-		player2.setBackground(Color.YELLOW);
+	    
+	    IconPlayer player2 = new IconPlayer("girl");
 	    btnNumOfMatchedPairs_P2 = new JButton("0");
 	    btnNumOfMatchedPairs_P2.setBackground(Color.YELLOW);
 	    
@@ -114,21 +116,27 @@ public class BoardView implements java.util.Observer{
 	
 		BoardModelNotification notification = ((BoardModelNotification)obj);
 	
-		/*ESCONDE DOS CARTAS*/
 		if(obs instanceof BoardModel && ActionsBoardModel.setMatchedCard.equals(notification.action)) {
 			int PEEK_DELAY = (int) 1 * 1000;
 			Timer timer = new Timer(PEEK_DELAY, e -> setMatchedImage( notification.row, notification.col));
 			timer.setRepeats(false);
 			timer.start();
 		}
-		/*ESCONDE DOS CARTAS*/
+	
 		if(obs instanceof BoardModel && ActionsBoardModel.setHiddenCard.equals(notification.action)) {
-			setHiddenImage( notification.row, notification.col);
+			int PEEK_DELAY = (int) 1 * 1000;
+			Timer timer = new Timer(PEEK_DELAY, e -> setHiddenImage( notification.row, notification.col));
+			timer.setRepeats(false);
+			timer.start();
 		}
-		/*MUESTRA UNA CARTA*/
+	
 		if(obs instanceof BoardModel && ActionsBoardModel.setSelectedCard.equals(notification.action)) {
 			String type = notification.model.mBoard[notification.row][notification.col].getType();
 			setImage( notification.row, notification.col, type);
+		}
+		
+		if(obs instanceof BoardModel && ActionsBoardModel.solved.equals(notification.action)) {
+			solvedMessage();
 		}
 	} 
 
@@ -162,20 +170,24 @@ public class BoardView implements java.util.Observer{
 		this.btnBoard[row][col].setHiddenImage();
 	}
 		 
-	public void finalMessage(boolean pos) {
-		 if(pos) JOptionPane.showMessageDialog(null, "Solved. PLAYER 1 GAIN !!!", "RESULT", JOptionPane.INFORMATION_MESSAGE);
-		 else JOptionPane.showMessageDialog(null, "Solved. PLAYER 2 GAIN !!!", "RESULT", JOptionPane.INFORMATION_MESSAGE);
+	private void solvedMessage() {
+		 if(turn.isPlayerOne()) JOptionPane.showMessageDialog(null, "You WIN, CONGRATULATIONS !!!", "RESULT", JOptionPane.INFORMATION_MESSAGE);
+		 else JOptionPane.showMessageDialog(null, "You LOSE :( ", "RESULT", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	public void showTurn(boolean pos) {
-		if(pos) JOptionPane.showMessageDialog(null, "player1's turn.!!", "Player 1", JOptionPane.INFORMATION_MESSAGE);
+	public void notIsYourTurn() {
+		JOptionPane.showMessageDialog(null, "You must wait for your turn", "WAIT", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	public void showTurn() {
+		if(turn.isPlayerOne()) JOptionPane.showMessageDialog(null, "player1's turn.!!", "Player 2", JOptionPane.INFORMATION_MESSAGE);
 		else JOptionPane.showMessageDialog(null, "player2's turn.!!", "Player 2", JOptionPane.INFORMATION_MESSAGE);
 		
 	}
 	
-	public void showFail(boolean pos) {
-		if(pos) JOptionPane.showMessageDialog(null, "player1's fail.!!", "Fail", JOptionPane.INFORMATION_MESSAGE);
-		else JOptionPane.showMessageDialog(null, "player2's fail.!!", "Fail", JOptionPane.INFORMATION_MESSAGE);
+	public void showFail() {
+		if(turn.isPlayerOne()) JOptionPane.showMessageDialog(null, "You Fail!!", "Fail", JOptionPane.INFORMATION_MESSAGE);
+		else JOptionPane.showMessageDialog(null, "Your Oponent Fail.!!", "Fail", JOptionPane.INFORMATION_MESSAGE);
 		 
 	}
 		

@@ -2,6 +2,7 @@ package com.delgadotrueba.game2;
 
 import com.delgadotrueba.game2.controllers.BoardController;
 import com.delgadotrueba.game2.models.BoardModel;
+import com.delgadotrueba.game2.utils.Turn;
 import com.delgadotrueba.game2.views.BoardView;
 
 public class RunBoardMVC {
@@ -12,22 +13,25 @@ public class RunBoardMVC {
 
 		public RunBoardMVC() {
 
+			//CREATE TURN
+			boolean playerOne = true;
+			boolean playerTwo = false;
+			Turn turn = new Turn(playerOne, playerTwo);
+			
 			//create Model and View
 			BoardModel myModel 	= new BoardModel();
-			BoardView myView 	= new BoardView();
+			BoardView myView 	= new BoardView(turn);
 
 			//tell Model about View. 
 			myModel.addObserver(myView);
 		
 			//create Controller. tell it about Model and View, initialise model
-			BoardController myController = new BoardController();
+			BoardController myController = new BoardController(turn);
 			myController.addModel(myModel);
 			myController.addView(myView);
 			myController.initModel(0, 0, 0);
 
 			//tell View about Controller 
 			myView.addController(myController);
-			
-
 		}
 }

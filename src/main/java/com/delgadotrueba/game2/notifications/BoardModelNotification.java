@@ -12,6 +12,10 @@ public class BoardModelNotification {
 	public int row;
 	public int col;
 
+	public BoardModelNotification(ActionsBoardModel action) {
+		this.action = action;
+	}
+	
 	public BoardModelNotification(ActionsBoardModel action, BoardModel model) {
 		this.action = action;
 		this.model = model;
