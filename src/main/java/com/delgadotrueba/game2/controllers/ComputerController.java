@@ -8,14 +8,19 @@ import com.delgadotrueba.game2.views.BoardView;
 
 public class ComputerController extends Thread {
 
+	private int NUMBER_OF_ROWS;
+	private int NUMBER_OF_COLUMNS;
+	 
 	private BoardModel model;
 	private BoardView view;
 	
 	private Turn turn;
 	private int numOfMatched_P2 = 0;
 	
-	public ComputerController(Turn turn) {	
+	public ComputerController(Turn turn, int rows, int cols) {	
 		this.turn = turn;
+		NUMBER_OF_ROWS = rows;
+		NUMBER_OF_COLUMNS = cols;
 	} 
 	
 	public void addModel(BoardModel m){
@@ -26,14 +31,14 @@ public class ComputerController extends Thread {
 		this.view = v;
 	}
 	
-	public void initModel(int numOfMatchedPairs, int numOfFailedAttempts, int selectedCards){
+	public void initModel(){
 		
 	}
 	
 	public void actionPerformed() {
 		Random random = new Random();
-		int row = (0 + random.nextInt(3));
-		int col = (0 + random.nextInt(2));
+		int row = (0 + random.nextInt(NUMBER_OF_ROWS));
+		int col = (0 + random.nextInt(NUMBER_OF_COLUMNS));
 		
 		if (!(turn.isPlayerTwo())) {
 			return;

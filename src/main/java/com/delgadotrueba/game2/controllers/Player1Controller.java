@@ -6,16 +6,16 @@ import com.delgadotrueba.game2.utils.Turn;
 import com.delgadotrueba.game2.views.BoardView;
 import com.delgadotrueba.game2.views.CellView;
 
-public class BoardController implements java.awt.event.ActionListener {
+public class Player1Controller implements java.awt.event.ActionListener {
 	
 	private BoardModel model;
 	private BoardView view;
 		
-	private int numOfMatched_P1 = 0;
+	private int numOfMatched = 0;
 	
 	private Turn turn;
 	
-	public BoardController(Turn turn) {	
+	public Player1Controller(Turn turn) {	
 		this.turn = turn;
 		// Must be empty
 	} 
@@ -68,7 +68,7 @@ public class BoardController implements java.awt.event.ActionListener {
   				
   				this.model.setSelectedCardsMatched();
   				
-  				this.incrementNumOfMatchedPairs();
+  				this.view.displayNumOfMatchedPairs_P1(++numOfMatched);	
   		  		
   				if(this.model.isSolved()) {
   					this.view.player1Win();
@@ -86,7 +86,11 @@ public class BoardController implements java.awt.event.ActionListener {
   		
 	}
 	
-	 /** This method initializes the board with a new set of cards*/
+	////////////////////////////////////////////////////////////////////////////
+	// Public Interface
+	////////////////////////////////////////////////////////////////////////////
+	
+	/** This method initializes the board with a new set of cards*/
 	 public void init() {
 		this.resetBoardParam();
 		this.model.initializeNewBoard();
@@ -107,22 +111,17 @@ public class BoardController implements java.awt.event.ActionListener {
 			this.view.showInfoTurnPlayer2();
 		}
 	 }
-	 	// PRIVATE API
 	
+	////////////////////////////////////////////////////////////////////////////
+	// Private Interface
+	////////////////////////////////////////////////////////////////////////////
 	private void resetBoardParam() {
 		resetNumMatchedPairs();
 	}
 	
 	private void resetNumMatchedPairs() {
-		numOfMatched_P1 = 0;
-		this.view.displayNumOfMatchedPairs_P1(numOfMatched_P1);
+		numOfMatched = 0;
+		this.view.displayNumOfMatchedPairs_P1(numOfMatched);
 	}
-	public void incrementNumOfMatchedPairs() {
-		if(turn.isPlayerOne()) {
-			this.numOfMatched_P1 = this.numOfMatched_P1 +1 ;
-			this.view.displayNumOfMatchedPairs_P1(numOfMatched_P1);
-		}	
-	}
-	
 	
 }

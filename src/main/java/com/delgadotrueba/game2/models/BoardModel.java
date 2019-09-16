@@ -10,23 +10,30 @@ import com.delgadotrueba.game2.notifications.BoardModelNotification;
 import com.delgadotrueba.game2.utils.ErrorHandler;
 
 public class BoardModel extends java.util.Observable {
-	
-	//SIEMPRE DEBE DE DAR UNA MATRIZ PAR
-	private static final int NUMBER_OF_ROWS = 3;
-	private static final int NUMBER_OF_COLUMNS = 2;
-	
-	//GENERAR CELL TYPE => IMAGEN CORRESPONDIENTE
-	private static final int MIN_NUM_OF_CARDS = 1;
-	private static final int MAX_NUM_OF_CARDS = NUMBER_OF_ROWS * NUMBER_OF_COLUMNS;
-	private static final int NUMBER_OF_PAIRS = MAX_NUM_OF_CARDS / 2;
 			
 	private static final int FIRST = 0;
 	private static final int SECOND = 1;
 	private static final int MAX_SELECTED_CARDS = 2;
 	
+	// SIEMPRE DEBE DE DAR UNA MATRIZ PAR
+	private int NUMBER_OF_ROWS;
+	private int NUMBER_OF_COLUMNS;
+	
+	// GENERAR CELL TYPE => IMAGEN CORRESPONDIENTE
+	private int MIN_NUM_OF_CARDS;
+	private int MAX_NUM_OF_CARDS;
+	private int NUMBER_OF_PAIRS;
+	
 	public CellModel[][] mBoard = null;
 		
-	public BoardModel() {
+	public BoardModel(int rows, int cols) {
+		NUMBER_OF_ROWS = rows;
+		NUMBER_OF_COLUMNS = cols;
+		
+		MIN_NUM_OF_CARDS = 1;
+		MAX_NUM_OF_CARDS = NUMBER_OF_ROWS * NUMBER_OF_COLUMNS;
+		NUMBER_OF_PAIRS = MAX_NUM_OF_CARDS / 2;
+		 
 		mBoard = new CellModel[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
 		
 		String[][] typeCell = initCardStorage();
@@ -157,6 +164,7 @@ public class BoardModel extends java.util.Observable {
 	////////////////////////////////////////////////////////////////////////////
 	// Private Interface	 
 	////////////////////////////////////////////////////////////////////////////
+	
 	private String[][] initCardStorage() {
 		
 		String[] cardStorage = new String[MAX_NUM_OF_CARDS];

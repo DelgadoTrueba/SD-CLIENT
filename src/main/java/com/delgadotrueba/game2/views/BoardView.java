@@ -20,15 +20,18 @@ import com.delgadotrueba.game2.utils.Turn;
 
 public class BoardView implements java.util.Observer{
 	
-	 private static final int NUMBER_OF_ROWS = 3;
-	 private static final int NUMBER_OF_COLUMNS = 2;
+	 private int NUMBER_OF_ROWS;
+	 private int NUMBER_OF_COLUMNS;
 	   
 	 private CellView[][] btnBoard;
 	 private JButton btnNumOfMatchedPairs_P1;
 	 private JButton btnNumOfMatchedPairs_P2;
-	 private JButton textInfo;
+	 private JButton textInfo; 
 	 	 
-	 public BoardView() {
+	 public BoardView(int playerNum, int rows, int cols) {
+		 
+		NUMBER_OF_ROWS = rows;
+		NUMBER_OF_COLUMNS = cols;
  
 		JFrame jframe = new JFrame("Memory Game. Sistemas Distribuidos");
 		
@@ -79,8 +82,15 @@ public class BoardView implements java.util.Observer{
 		jpanel3.setLayout(new GridLayout(1, 2));
 		textInfo = new JButton();
 		
-		IconPlayer playerChoosen = new IconPlayer("boy");
-		playerChoosen.setText("You´re player 1");
+		IconPlayer playerChoosen;
+		if(playerNum == 1) {
+			playerChoosen = new IconPlayer("boy");
+			playerChoosen.setText("You´re player 1");
+		}
+		else {
+			playerChoosen = new IconPlayer("girl");
+			playerChoosen.setText("You´re player 2");
+		}
 		jpanel3.add(textInfo);
 		jpanel3.add(playerChoosen);
 	
@@ -89,7 +99,7 @@ public class BoardView implements java.util.Observer{
 		/**/
 
 		jframe.pack();
-		jframe.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		//jframe.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		jframe.setResizable(true);
 		jframe.setVisible(true);		
 		
@@ -165,7 +175,7 @@ public class BoardView implements java.util.Observer{
 		
 		this.btnNumOfMatchedPairs_P2.setBackground(new JButton().getBackground());
 		int PEEK_DELAY = (int) 1 * 500;
-		Timer timer = new Timer(PEEK_DELAY, e -> this.btnNumOfMatchedPairs_P2.setBackground(Color.cyan));
+		Timer timer = new Timer(PEEK_DELAY, e -> this.btnNumOfMatchedPairs_P2.setBackground(Color.YELLOW));
 		timer.setRepeats(false);
 		timer.start();
 	}

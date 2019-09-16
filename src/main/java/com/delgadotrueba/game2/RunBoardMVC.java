@@ -1,6 +1,6 @@
 package com.delgadotrueba.game2;
 
-import com.delgadotrueba.game2.controllers.BoardController;
+import com.delgadotrueba.game2.controllers.Player1Controller;
 import com.delgadotrueba.game2.controllers.ComputerController;
 import com.delgadotrueba.game2.models.BoardModel;
 import com.delgadotrueba.game2.utils.Turn;
@@ -10,32 +10,46 @@ public class RunBoardMVC {
 
 		public RunBoardMVC() {
 
-			//CREATE TURN
+			////////////////////////////////////////////////////////////////////////////
+			// DATA
+			////////////////////////////////////////////////////////////////////////////
+			
+			// CREATE TURN
 			boolean playerOne = false;
 			boolean playerTwo = true;
 			Turn turn = new Turn(playerOne, playerTwo);
 			
-			//create Model and View
-			BoardModel myModel 	= new BoardModel();
-			BoardView myView 	= new BoardView();
+			// PARAM GAME
+			int NUMBER_OF_ROWS = 4;
+			int NUMBER_OF_COLUMNS = 2;
+			
+			////////////////////////////////////////////////////////////////////////////
+			// USER CONTROLLER
+			////////////////////////////////////////////////////////////////////////////
+			
+			// Create Model & View
+			BoardModel myModel 	= new BoardModel(NUMBER_OF_ROWS, NUMBER_OF_COLUMNS);
+			BoardView myView 	= new BoardView(1, NUMBER_OF_ROWS, NUMBER_OF_COLUMNS );
 
-			//tell Model about View. 
+			// Tell Model about View. 
 			myModel.addObserver(myView);
 		
-			//create Controller. tell it about Model and View, initialise model
-			BoardController myController = new BoardController(turn);
-			myController.addModel(myModel);
-			myController.addView(myView);
-			myController.initModel();
+			// Create Controller. tell it about Model and View, initialise model
+			Player1Controller player1Controller = new Player1Controller(turn);
+			player1Controller.addModel(myModel);
+			player1Controller.addView(myView);
+			player1Controller.initModel();
 
-			//tell View about Controller 
-			myView.addController(myController);
+			// Tell View about Controller 
+			myView.addController(player1Controller);
 			
-			//OTHER CONTROLLER
-			ComputerController computerController = new ComputerController(turn);
+			////////////////////////////////////////////////////////////////////////////
+			// COMPUTER CONTROLLER
+			////////////////////////////////////////////////////////////////////////////
+			ComputerController computerController = new ComputerController(turn, NUMBER_OF_ROWS, NUMBER_OF_COLUMNS);
 			computerController.addModel(myModel);
 			computerController.addView(myView);
-			computerController.initModel(0, 0, 0);
+			computerController.initModel();
 			
 			computerController.start();
 		}
