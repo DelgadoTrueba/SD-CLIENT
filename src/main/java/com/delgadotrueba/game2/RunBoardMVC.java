@@ -20,7 +20,7 @@ public class RunBoardMVC {
 			Turn turn = new Turn(playerOne, playerTwo);
 			
 			// PARAM GAME
-			int NUMBER_OF_ROWS = 4;
+			int NUMBER_OF_ROWS = 3;
 			int NUMBER_OF_COLUMNS = 2;
 			
 			////////////////////////////////////////////////////////////////////////////
