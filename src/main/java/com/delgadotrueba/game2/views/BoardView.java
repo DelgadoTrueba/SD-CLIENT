@@ -16,6 +16,7 @@ import javax.swing.WindowConstants;
 import com.delgadotrueba.game2.models.BoardModel;
 import com.delgadotrueba.game2.notifications.ActionsBoardModel;
 import com.delgadotrueba.game2.notifications.BoardModelNotification;
+import com.delgadotrueba.game2.notifications.ObservableBoarModel;
 import com.delgadotrueba.game2.utils.Turn;
 
 public class BoardView implements java.util.Observer{
@@ -124,7 +125,7 @@ public class BoardView implements java.util.Observer{
 		BoardModelNotification notification = ((BoardModelNotification)obj);
 		int row, col;
 		
-		if(obs instanceof BoardModel && ActionsBoardModel.setMatchedCard.equals(notification.action)) {
+		if(obs instanceof ObservableBoarModel && ActionsBoardModel.setMatchedCard.equals(notification.action)) {
 			row = notification.row;
 			col = notification.col;
 			
@@ -137,7 +138,7 @@ public class BoardView implements java.util.Observer{
 			timer.start();
 		}
 	
-		if(obs instanceof BoardModel && ActionsBoardModel.setHiddenCard.equals(notification.action)) {
+		if(obs instanceof ObservableBoarModel && ActionsBoardModel.setHiddenCard.equals(notification.action)) {
 			
 			row = notification.row;
 			col = notification.col;
@@ -153,7 +154,7 @@ public class BoardView implements java.util.Observer{
 			
 		}
 	
-		if(obs instanceof BoardModel && ActionsBoardModel.setSelectedCard.equals(notification.action)) {
+		if(obs instanceof ObservableBoarModel && ActionsBoardModel.setSelectedCard.equals(notification.action)) {
 			String type = notification.model.mBoard[notification.row][notification.col].getType();
 			setImage( notification.row, notification.col, type);
 		}
@@ -202,14 +203,14 @@ public class BoardView implements java.util.Observer{
 		this.btnBoard[row][col].setBackground(new JButton().getBackground());
 	}
 		 
-	public void player1Win() {
+	public void playerWin() {
 		JOptionPane.showMessageDialog(null, "You WIN, CONGRATULATIONS !!!", "RESULT", JOptionPane.INFORMATION_MESSAGE);
-		 System.exit(0);
+		System.exit(0);
 	}
 	
-	public void player1Lose() {
+	public void playerLose() {
 		JOptionPane.showMessageDialog(null, "You LOSE :( ", "RESULT", JOptionPane.INFORMATION_MESSAGE);
-		 System.exit(0);
+		System.exit(0);
 	}
 	
 	public void notIsYourTurn() {

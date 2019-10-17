@@ -5,11 +5,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
-import com.delgadotrueba.game2.notifications.ActionsBoardModel;
-import com.delgadotrueba.game2.notifications.BoardModelNotification;
 import com.delgadotrueba.game2.utils.ErrorHandler;
 
-public class BoardModel extends java.util.Observable {
+public class BoardModel {
 			
 	private static final int FIRST = 0;
 	private static final int SECOND = 1;
@@ -25,8 +23,9 @@ public class BoardModel extends java.util.Observable {
 	private int NUMBER_OF_PAIRS;
 	
 	public CellModel[][] mBoard = null;
-		
+	
 	public BoardModel(int rows, int cols) {
+		
 		NUMBER_OF_ROWS = rows;
 		NUMBER_OF_COLUMNS = cols;
 		
@@ -41,6 +40,26 @@ public class BoardModel extends java.util.Observable {
 			   for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
 				   String type = typeCell[row][column];
 				   mBoard[row][column] = new CellModel(type);
+			   }
+		}
+	}
+	
+	public BoardModel( BoardModel clone) {
+		
+		NUMBER_OF_ROWS = clone.NUMBER_OF_ROWS;
+		NUMBER_OF_COLUMNS = clone.NUMBER_OF_COLUMNS;
+		
+		MIN_NUM_OF_CARDS = 1;
+		MAX_NUM_OF_CARDS = NUMBER_OF_ROWS * NUMBER_OF_COLUMNS;
+		NUMBER_OF_PAIRS = MAX_NUM_OF_CARDS / 2;
+		 
+		mBoard = new CellModel[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
+		
+		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			   for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				   mBoard[row][column] = new CellModel(clone.mBoard[row][column].getType());
+				   mBoard[row][column].setMatched(clone.mBoard[row][column].isMatched());
+				   mBoard[row][column].setSelected(clone.mBoard[row][column].isSelected());
 			   }
 		}
 	}
@@ -70,7 +89,7 @@ public class BoardModel extends java.util.Observable {
 			return false;
 		}
 		
-		// NO ESTA SELECCIONADA NI EMPAREJADA
+  		// NO ESTA SELECCIONADA NI EMPAREJADA
 		CellModel aCard = this.mBoard[row][col];
 		if ( aCard.isMatched() || aCard.isSelected() ) {
 			return false;
@@ -126,12 +145,36 @@ public class BoardModel extends java.util.Observable {
 		CellModel cellModel = this.mBoard[row][col];
 		cellModel.setMatched(false);
 		cellModel.setSelected(true);
-		
-		setChanged();
-		notifyObservers(new BoardModelNotification(ActionsBoardModel.setSelectedCard, this, row, col));
 	}
 	
-	public void setSelectedCardsHidden() {
+	public int[][] getSelectedCards() {
+		int[][] posiciones = new int[2][2];
+		int iteracion = 0;
+		
+		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				if(mBoard[row][column].isSelected()) {
+					
+					posiciones[iteracion][0] = row;
+					posiciones[iteracion][1] = column;
+
+					iteracion = iteracion + 1;					
+				}
+			}
+		}
+		
+		return posiciones;
+	}
+	
+	public int[][] setSelectedCardsHidden() {
+		int[][] posiciones = new int[2][2];
+		int iteracion = 0; /** it = 0, carta 1, it=1, carta= 2**/
+		
+		posiciones[0][0] = -1;
+		posiciones[0][1] = -1;
+		posiciones[1][0] = -1;
+		posiciones[1][1] = -1;
+		
 		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
 				if(mBoard[row][column].isSelected()) {
@@ -139,14 +182,27 @@ public class BoardModel extends java.util.Observable {
 					cellModel.setMatched(false);
 					cellModel.setSelected(false);
 					
-					setChanged();
-					notifyObservers(new BoardModelNotification(ActionsBoardModel.setHiddenCard, this, row, column));
+					posiciones[iteracion][0] = row;
+					posiciones[iteracion][1] = column;
+
+					iteracion = iteracion + 1;					
 				}
 			}
 		}
+		
+		return posiciones;
 	}
 	
-	public void setSelectedCardsMatched() {
+	public int[][] setSelectedCardsMatched() {
+		
+		int[][] posiciones = new int[2][2];
+		int iteracion = 0; /** it = 0, carta 1, it=1, carta= 2**/
+		
+		posiciones[0][0] = -1;
+		posiciones[0][1] = -1;
+		posiciones[1][0] = -1;
+		posiciones[1][1] = -1;
+		
 		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
 				if(mBoard[row][column].isSelected()) {
@@ -154,11 +210,14 @@ public class BoardModel extends java.util.Observable {
 					cellModel.setMatched(true);
 					cellModel.setSelected(false);
 					
-					setChanged();
-					notifyObservers(new BoardModelNotification(ActionsBoardModel.setMatchedCard, this, row, column));
+					posiciones[iteracion][0] = row;
+					posiciones[iteracion][1] = column;
+
+					iteracion = iteracion + 1;	
 				}
 			}
 		}
+		return posiciones;
 	}
 		
 	////////////////////////////////////////////////////////////////////////////
@@ -166,7 +225,7 @@ public class BoardModel extends java.util.Observable {
 	////////////////////////////////////////////////////////////////////////////
 	
 	private String[][] initCardStorage() {
-		
+		/*
 		String[] cardStorage = new String[MAX_NUM_OF_CARDS];
 		String[] firstPair = new String[NUMBER_OF_PAIRS];
 		String[] secondPair = new String[NUMBER_OF_PAIRS];
@@ -196,8 +255,8 @@ public class BoardModel extends java.util.Observable {
 		}
 	
 		return typeCell;
-		
-		//return new String[][]{{"01", "01","02", "02", "03", "03"},{"04", "04", "05", "05","06", "06"},{ "07", "07", "08", "08", "09", "09"},{"10", "10", "11", "11","12", "12"}};
+		*/
+		return new String[][]{{"01", "01","02", "02", "03", "03"},{"04", "04", "05", "05","06", "06"},{ "07", "07", "08", "08", "09", "09"},{"10", "10", "11", "11","12", "12"}};
 	}
 	
 	private String[] randomListWithoutRep() {
@@ -262,4 +321,21 @@ public class BoardModel extends java.util.Observable {
 			return true;
 		}
 	}
+	
+	public void printState() {
+		boolean mached;
+		boolean selected;
+		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			   for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				   mached = mBoard[row][column].isMatched();
+				   selected = mBoard[row][column].isSelected();
+				   if(mached) System.out.print(" M ");
+				   if(selected) System.out.print(" S ");
+				   if(!selected && !mached) System.out.print(" H ");
+
+			   }
+			   System.out.println();
+		}
+	}
+	
 }

@@ -14,7 +14,7 @@ import com.delgadotrueba.game2.models.CellModel;
 import com.delgadotrueba.game2.notifications.ObservableBoarModel;
 import com.delgadotrueba.game2.views.BoardView;
 
-public class ComputerController extends Thread {
+public class Computer2Controller extends Thread {
 
 	private ObservableBoarModel model;
 	private BoardView view;
@@ -22,11 +22,11 @@ public class ComputerController extends Thread {
 	private int numOfMatched_P2 = 0;
 	
 	private BoardRMI rmi;
-	private static final boolean PLAYER_TWO = true;
+	private static final boolean PLAYER_ONE = false;
 	private int NUMBER_OF_ROWS;
 	private int NUMBER_OF_COLUMNS;
 	
-	public ComputerController(BoardRMI rmi, int rows, int cols) {	
+	public Computer2Controller(BoardRMI rmi, int rows, int cols) {	
 		this.rmi = rmi;
 		NUMBER_OF_ROWS = rows;
 		NUMBER_OF_COLUMNS = cols;
@@ -59,17 +59,16 @@ public class ComputerController extends Thread {
   			int r2 = resul[1][0];
   			int c2 = resul[1][1];
 
-  		
   				if (this.model.areSelectedCardsSameType()){
   	  				
   	  				this.model.setSelectedCardsMatched();
   	  				
-  	  				this.view.displayNumOfMatchedPairs_P2(++numOfMatched_P2);
+  	  				this.view.displayNumOfMatchedPairs_P1(++numOfMatched_P2);
   	  			} else {
   	  				  				
   	  				this.model.setSelectedCardsHidden();
   	  				
-  					this.view.showInfoTurnPlayer1();
+  					this.view.showInfoTurnPlayer2();
   	  			}
   			
   		}
@@ -79,15 +78,11 @@ public class ComputerController extends Thread {
 		boolean comprobar = true;
 		while(true){  
 			try{
+				Thread.sleep(1500);				
 				
-				Thread.sleep(1500);
 
-				if ((rmi.getTurn().isPlayerOne()) & comprobar) {
-					
+				if ((rmi.getTurn().isPlayerTwo()) & comprobar) {
 				
-					
-					//getBoard & buscar diferencias;
-
 					BoardModel olModel = this.model.getBoard();
 					BoardModel newModel = rmi.getBoard();
 					
@@ -97,7 +92,6 @@ public class ComputerController extends Thread {
 						for(int[] aux: resul) {
 							int row = aux[0];
 							int col = aux[1];
-
 							actionPerformed(row, col);
 							Thread.sleep(1000);
 						}
@@ -106,10 +100,9 @@ public class ComputerController extends Thread {
 					if(this.rmi.isSolved()) {
   	  					this.view.playerLose();
   	  				}
-					
 					comprobar = false;
 				}
-				else if(rmi.getTurn().isPlayerTwo()){
+				else if(rmi.getTurn().isPlayerOne()){
 					comprobar = true;
 				}
 		

@@ -12,7 +12,7 @@ import com.delgadotrueba.game2.utils.Turn;
 import com.delgadotrueba.game2.views.BoardView;
 import com.delgadotrueba.game2.views.CellView;
 
-public class Player1Controller implements java.awt.event.ActionListener {
+public class Player2Controller implements java.awt.event.ActionListener {
 	
 	private ObservableBoarModel model;
 	private BoardView view;
@@ -20,10 +20,10 @@ public class Player1Controller implements java.awt.event.ActionListener {
 	private int numOfMatched = 0;
 	
 	private BoardRMI rmi;
-	private static final boolean PLAYER_ONE = false;
+	private static final boolean PLAYER_TWO = true;
 
 	
-	public Player1Controller(BoardRMI rmi) {	
+	public Player2Controller(BoardRMI rmi) {	
 		this.rmi = rmi;
 		// Must be empty
 	} 
@@ -55,7 +55,7 @@ public class Player1Controller implements java.awt.event.ActionListener {
 		
   		// START GAME
 		try {
-			if (!(rmi.getTurn().isPlayerOne())) {
+			if (!(rmi.getTurn().isPlayerTwo())) {
 				this.view.notIsYourTurn();
 				return;
 			}
@@ -85,7 +85,7 @@ public class Player1Controller implements java.awt.event.ActionListener {
   			int c2 = resul[1][1];
   			
   			try {
-  				if (this.rmi.matchCards(PLAYER_ONE, r1, c1, r2, c2)){
+  				if (this.rmi.matchCards(PLAYER_TWO, r1, c1, r2, c2)){
   	  				
   	  				this.model.setSelectedCardsMatched();
   	  				
@@ -98,7 +98,7 @@ public class Player1Controller implements java.awt.event.ActionListener {
   	  			} else {
   	  				  				
   	  				this.model.setSelectedCardsHidden(); 				
-  	   				this.view.showInfoTurnPlayer2();
+  	   				this.view.showInfoTurnPlayer1();
   	  			}
   			}catch (BoardNotInitializedException e) {
 				System.out.println("BoardNotInitializedException");

@@ -38,6 +38,10 @@ public class CellModel {
 		}
 	}
 	
+	public int getTypeInt() {
+		return  mType;
+	}
+	
 	public void setType(String aType) {
 		int parsedType = Integer.parseInt(aType);
 		if (parsedType > MAX_TYPE_RANGE || parsedType < MIN_TYPE_RANGE){
@@ -81,6 +85,27 @@ public class CellModel {
 			return false;
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "CellModel [mIsSelected=" + mIsSelected + ", mIsMatched=" + mIsMatched + ", mType=" + mType + "]";
+	}
+
+	public boolean equals(CellModel other) {
+		
+		if (other == null) return false;
+		
+		if (mIsMatched != other.mIsMatched)
+			return false;
+		if (mIsSelected != other.mIsSelected)
+			return false;
+		if (mType != other.mType)
+			return false;
+		
+		return true;
+	}
+	
+	
 	
 	
 }
