@@ -154,9 +154,15 @@ public class BoardView implements java.util.Observer{
 			
 		}
 	
-		if(obs instanceof ObservableBoarModel && ActionsBoardModel.setSelectedCard.equals(notification.action)) {
-			String type = notification.model.mBoard[notification.row][notification.col].getType();
+		if(obs instanceof ObservableBoarModel && ActionsBoardModel.setSelectedCardJ1.equals(notification.action)) {
+			String type = notification.model.mBoard[notification.row][notification.col].getTypeString();
 			setImage( notification.row, notification.col, type);
+			this.btnBoard[notification.row][notification.col].setBackground(Color.CYAN);
+		}
+		if(obs instanceof ObservableBoarModel && ActionsBoardModel.setSelectedCardJ2.equals(notification.action)) {
+			String type = notification.model.mBoard[notification.row][notification.col].getTypeString();
+			setImage( notification.row, notification.col, type);
+			this.btnBoard[notification.row][notification.col].setBackground(Color.YELLOW);
 		}
 	} 
 

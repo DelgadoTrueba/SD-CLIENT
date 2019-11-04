@@ -1,5 +1,6 @@
 package com.delgadotrueba.game2.notifications;
 
+import java.util.ArrayList;
 import java.util.Observable;
 
 import com.delgadotrueba.game2.models.BoardModel;
@@ -15,11 +16,18 @@ public class ObservableBoarModel extends Observable {
 	}
 	
 	/**THESE METHODS NOTIFICATE TO THE VIEW**/
-	public void setCardSelected(int row, int col){
+	public void setCardSelectedJ1(int row, int col){
 		this.boardModel.setCardSelected(row, col);
 		
 		setChanged();
-		notifyObservers(new BoardModelNotification(ActionsBoardModel.setSelectedCard, this.boardModel, row, col));
+		notifyObservers(new BoardModelNotification(ActionsBoardModel.setSelectedCardJ1, this.boardModel, row, col));
+	}
+	
+	public void setCardSelectedJ2(int row, int col){
+		this.boardModel.setCardSelected(row, col);
+		
+		setChanged();
+		notifyObservers(new BoardModelNotification(ActionsBoardModel.setSelectedCardJ2, this.boardModel, row, col));
 	}
 	
 	public void setSelectedCardsHidden() {
@@ -41,7 +49,7 @@ public class ObservableBoarModel extends Observable {
 			notifyObservers(new BoardModelNotification(ActionsBoardModel.setHiddenCard, this.boardModel, row, column));
 		}
 	}
-	
+		
 	public void setSelectedCardsMatched() {
 		
 		int[][] resul = this.boardModel.setSelectedCardsMatched();
@@ -83,16 +91,12 @@ public class ObservableBoarModel extends Observable {
 		this.boardModel.initializeNewBoard();
 	}
 	
-	public void reinitializeBoard() {
-		this.boardModel.reinitializeBoard();
-	}
-	
 	public int[][] getSelectedCards(){
 		return this.boardModel.getSelectedCards();
 	}
-	
-	public BoardModel getBoard() {
-		return this.boardModel;
+		
+	public int getMatchedCard() {
+		return this.boardModel.getMatchedCard();
 	}
 	
 }

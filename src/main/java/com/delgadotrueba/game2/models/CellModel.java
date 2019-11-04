@@ -21,16 +21,19 @@ public class CellModel {
 	private boolean mIsMatched = false;
 	private int mType = EMPTY_CELL_TYPE;
 	 
-	public CellModel(String aType) {
-		int parsedType = Integer.parseInt(aType);
-		this.mType = parsedType;
+	public CellModel(int aType) {
+		this.mType = aType;
+	}
+	
+	public CellModel() {
+	
 	}
 	
 	////////////////////////////////////////////////////////////////////////////
 	// Public Interface
 	////////////////////////////////////////////////////////////////////////////
 	
-	public String getType() {
+	public String getTypeString() {
 		if(mType < 10) {
 			return "0" + mType;
 		}else {
@@ -38,17 +41,10 @@ public class CellModel {
 		}
 	}
 	
-	public int getTypeInt() {
+	public int getType() {
 		return  mType;
 	}
 	
-	public void setType(String aType) {
-		int parsedType = Integer.parseInt(aType);
-		if (parsedType > MAX_TYPE_RANGE || parsedType < MIN_TYPE_RANGE){
-			ErrorHandler.error("CELL: ", "setType(int) reported \"Invalid type code\"", true);
-		}
-		mType = parsedType;
-	}
 		
 	public boolean sameType(CellModel other) {
 		if (other == null) {
@@ -56,7 +52,7 @@ public class CellModel {
 			return false;
 		}
 		
-		if (this.getType().equals(other.getType())) {
+		if (this.getTypeString().equals(other.getTypeString())) {
 			return true;
 		} else {
 			return false;
@@ -84,11 +80,6 @@ public class CellModel {
 		} else {
 			return false;
 		}
-	}
-
-	@Override
-	public String toString() {
-		return "CellModel [mIsSelected=" + mIsSelected + ", mIsMatched=" + mIsMatched + ", mType=" + mType + "]";
 	}
 
 	public boolean equals(CellModel other) {

@@ -3,5 +3,6 @@ package com.delgadotrueba.game2.notifications;
 public enum ActionsBoardModel {
 	setMatchedCard,
 	setHiddenCard,
-	setSelectedCard,	
+	setSelectedCardJ1,	
+	setSelectedCardJ2,
 }

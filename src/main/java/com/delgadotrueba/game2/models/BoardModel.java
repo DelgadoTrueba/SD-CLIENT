@@ -3,6 +3,7 @@ package com.delgadotrueba.game2.models;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 import com.delgadotrueba.game2.utils.ErrorHandler;
@@ -24,6 +25,25 @@ public class BoardModel {
 	
 	public CellModel[][] mBoard = null;
 	
+	public BoardModel(int rows, int cols, int[][] tipos) {
+		
+		NUMBER_OF_ROWS = rows;
+		NUMBER_OF_COLUMNS = cols;
+		
+		MIN_NUM_OF_CARDS = 1;
+		MAX_NUM_OF_CARDS = NUMBER_OF_ROWS * NUMBER_OF_COLUMNS;
+		NUMBER_OF_PAIRS = MAX_NUM_OF_CARDS / 2;
+		 
+		mBoard = new CellModel[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
+		
+		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			   for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				   int type = tipos[row][column];
+				   mBoard[row][column] = new CellModel(type);
+			   }
+		}
+	}
+	
 	public BoardModel(int rows, int cols) {
 		
 		NUMBER_OF_ROWS = rows;
@@ -35,31 +55,9 @@ public class BoardModel {
 		 
 		mBoard = new CellModel[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
 		
-		String[][] typeCell = initCardStorage();
 		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 			   for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
-				   String type = typeCell[row][column];
-				   mBoard[row][column] = new CellModel(type);
-			   }
-		}
-	}
-	
-	public BoardModel( BoardModel clone) {
-		
-		NUMBER_OF_ROWS = clone.NUMBER_OF_ROWS;
-		NUMBER_OF_COLUMNS = clone.NUMBER_OF_COLUMNS;
-		
-		MIN_NUM_OF_CARDS = 1;
-		MAX_NUM_OF_CARDS = NUMBER_OF_ROWS * NUMBER_OF_COLUMNS;
-		NUMBER_OF_PAIRS = MAX_NUM_OF_CARDS / 2;
-		 
-		mBoard = new CellModel[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
-		
-		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
-			   for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
-				   mBoard[row][column] = new CellModel(clone.mBoard[row][column].getType());
-				   mBoard[row][column].setMatched(clone.mBoard[row][column].isMatched());
-				   mBoard[row][column].setSelected(clone.mBoard[row][column].isSelected());
+				   mBoard[row][column] = new CellModel();
 			   }
 		}
 	}
@@ -74,12 +72,7 @@ public class BoardModel {
 	
 	/** This method initializes the board with a new set of cards*/
 	public void initializeNewBoard() {
-		this.resetMatchedAndSelectedAndTypeCards();
-	}
-	
-	/** This method reinitializes the board with the current set of cards i.e. replay */
-	public void reinitializeBoard() {
-		 this.resetMatchedAndSelectedCards();
+		
 	}
 		
 	public boolean isCardValid(int row, int col) {
@@ -220,15 +213,52 @@ public class BoardModel {
 		return posiciones;
 	}
 		
+	public int getMatchedCard() {
+		int R1C1 = 0b0000000000000001;
+		int R1C2 = 0b0000000000000010;
+		int R1C3 = 0b0000000000000100;
+		int R1C4 = 0b0000000000001000;
+		
+		int R2C1 = 0b0000000000010000;
+		int R2C2 = 0b0000000000100000;
+		int R2C3 = 0b0000000001000000;
+		int R2C4 = 0b0000000010000000;
+		
+		int R3C1 = 0b0000000100000000;
+		int R3C2 = 0b0000001000000000;
+		int R3C3 = 0b0000010000000000;
+		int R3C4 = 0b0000100000000000;
+		
+		int R4C1 = 0b0001000000000000;
+		int R4C2 = 0b0010000000000000;
+		int R4C3 = 0b0100000000000000;
+		int R4C4 = 0b1000000000000000;
+		
+		int [][]aux = new int[][]{{R1C1, R1C2, R1C3, R1C4},{R2C1, R2C2, R2C3, R2C4},{R3C1, R3C2, R3C3, R3C4},{R4C1, R4C2, R4C3, R4C4}};
+
+		int emparejadas = 0;
+		
+		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				if(mBoard[row][column].isMatched()) {
+					emparejadas = emparejadas | aux[row][column];
+				}
+			}
+		}
+		
+		return emparejadas;
+	}
+	
+	
 	////////////////////////////////////////////////////////////////////////////
 	// Private Interface	 
 	////////////////////////////////////////////////////////////////////////////
 	
-	private String[][] initCardStorage() {
+	private int[][] initCardStorage() {
 		/*
-		String[] cardStorage = new String[MAX_NUM_OF_CARDS];
-		String[] firstPair = new String[NUMBER_OF_PAIRS];
-		String[] secondPair = new String[NUMBER_OF_PAIRS];
+		int[] cardStorage = new int[MAX_NUM_OF_CARDS];
+		int[] firstPair = new int[NUMBER_OF_PAIRS];
+		int[] secondPair = new int[NUMBER_OF_PAIRS];
 	
 		firstPair = randomListWithoutRep();
 	
@@ -246,7 +276,7 @@ public class BoardModel {
 			cardStorage[k] = secondPair[k - NUMBER_OF_PAIRS];
 		}
 		
-		String[][] typeCell = new String[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
+		int[][] typeCell = new String[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
 				
 		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
 			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
@@ -256,17 +286,17 @@ public class BoardModel {
 	
 		return typeCell;
 		*/
-		return new String[][]{{"01", "01","02", "02", "03", "03"},{"04", "04", "05", "05","06", "06"},{ "07", "07", "08", "08", "09", "09"},{"10", "10", "11", "11","12", "12"}};
+		return new int[][]{{1, 1, 2, 2, 3, 3},{4, 4, 5, 5, 6, 6},{ 7, 7, 8, 8, 9, 9},{10, 10, 11, 11,12, 12}};
 	}
 	
-	private String[] randomListWithoutRep() {
+	private int[] randomListWithoutRep() {
 
-		String[] generatedArray = new String[NUMBER_OF_PAIRS];
-		ArrayList<String> generated = new ArrayList<String>();
+		int[] generatedArray = new int[NUMBER_OF_PAIRS];
+		ArrayList<Integer> generated = new ArrayList<Integer>();
 	
 		for (int i = 0; i < NUMBER_OF_PAIRS; i++) {
 			while (true) {
-				String next = generateRandomImageType(MAX_NUM_OF_CARDS, MIN_NUM_OF_CARDS);
+				int next = generateRandomImageType(MAX_NUM_OF_CARDS, MIN_NUM_OF_CARDS);
 			
 				if (!generated.contains(next)) {
 					generated.add(next);
@@ -280,61 +310,20 @@ public class BoardModel {
 		return generatedArray;
 	}
 
-	private String generateRandomImageType(int max, int min) {
+	private int generateRandomImageType(int max, int min) {
 
 		Random random = new Random();
 		Integer aNumber = (min + random.nextInt(max));
 	
-		if (aNumber > 0 && aNumber < 10) {
-			return "0" + aNumber;
-		} else {
-			return aNumber.toString();
-		}
+		return aNumber;
 	}
-	
-	private void resetMatchedAndSelectedCards() {
-		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
-			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
-				mBoard[row][column].setMatched(false);
-				mBoard[row][column].setSelected(false);
-			}
-		}
-	}
-	
-	private void resetMatchedAndSelectedAndTypeCards() {
-		String[][] typeCell = initCardStorage();
-		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
-			for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
-				mBoard[row][column].setMatched(false);
-				mBoard[row][column].setSelected(false);
-				String type = typeCell[row][column];
-				mBoard[row][column].setType(type);
-			}
-		}
-	}
-	
+		
 	private boolean coordenatesValid(int row, int col) {
 		if(row < 0 || row >= NUMBER_OF_ROWS || col < 0 || col >= NUMBER_OF_COLUMNS) {
 			return false;
 		}
 		else{
 			return true;
-		}
-	}
-	
-	public void printState() {
-		boolean mached;
-		boolean selected;
-		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
-			   for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
-				   mached = mBoard[row][column].isMatched();
-				   selected = mBoard[row][column].isSelected();
-				   if(mached) System.out.print(" M ");
-				   if(selected) System.out.print(" S ");
-				   if(!selected && !mached) System.out.print(" H ");
-
-			   }
-			   System.out.println();
 		}
 	}
 	
