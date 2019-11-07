@@ -8,9 +8,9 @@ import com.delgadotrueba.game2.interfazRMI.IONetworkClient;
 import com.delgadotrueba.game2.interfazRMI.InterfazClienteRMI;
 import com.delgadotrueba.game2.interfazRMI.exceptions.RMIClientException;
 
-public class RunBoardMVC {
+public class UnirseBoardMVC {
 
-		public RunBoardMVC() throws RMIClientException{
+		public UnirseBoardMVC() throws RMIClientException{
 
 			////////////////////////////////////////////////////////////////////////////
 			// DATA
@@ -22,12 +22,9 @@ public class RunBoardMVC {
 			
 			//RMI
 			InterfazClienteRMI clienteRMI = new InterfazClienteRMI();
-			byte[][] tipos = null;
+			clienteRMI.obtenerTiposCartas();
 			
-			clienteRMI.newGame();
-			tipos = clienteRMI.obtenerTiposCartas();
-			
-			BoardModel myModel = new BoardModel(NUMBER_OF_ROWS, NUMBER_OF_COLUMNS, tipos);
+			BoardModel myModel = new BoardModel(NUMBER_OF_ROWS, NUMBER_OF_COLUMNS);
 			////////////////////////////////////////////////////////////////////////////
 			// USER CONTROLLER
 			////////////////////////////////////////////////////////////////////////////
@@ -44,7 +41,9 @@ public class RunBoardMVC {
 			Player1Controller player1Controller = new Player1Controller(clienteRMI);
 			player1Controller.addModel(observable_myModel);
 			player1Controller.addView(myView);
-			//player1Controller.initModel();
+			
+			player1Controller.initModel();
+			
 
 			// Tell View about Controller 
 			myView.addController(player1Controller);

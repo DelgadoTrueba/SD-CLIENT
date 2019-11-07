@@ -40,7 +40,7 @@ public class Player1Controller implements java.awt.event.ActionListener {
 		this.view = v;
 	}
 	
-	public void initModel(){		
+	public void initModel() throws RMIClientException{		
 		this.init();
 	}
 
@@ -163,25 +163,34 @@ public class Player1Controller implements java.awt.event.ActionListener {
 	// Public Interface
 	////////////////////////////////////////////////////////////////////////////
 	
-	/** This method initializes the board with a new set of cards*/
-	 public void init() {
-		this.resetBoardParam();
+	/** This method initializes the board with a new set of cards **/
+	 public void init() throws RMIClientException {
+		this.resetBoardParam(rmi.obtenerPuntosJ1(), rmi.obtenerPuntosJ2());
+		
+		byte[][] tipos = rmi.obtenerTiposCartas();;
+		this.model.reInitializeNewBoard(tipos);
+
 		this.view.hiddenImages();
-		if ((turn.isPlayerTwo())) {
-			this.view.showInfoTurnPlayer2();
-		}
+		
+		int emparejadas = rmi.obtenerCartasEmparejadas();
+		this.selectCards(emparejadas);
+ 		this.model.setSelectedCardsMatched();
+ 		
+ 		this.view.showInfoTurnPlayer1();
 	 }	
 	 
 	////////////////////////////////////////////////////////////////////////////
 	// Private Interface
 	////////////////////////////////////////////////////////////////////////////
-	private void resetBoardParam() {
-		resetNumMatchedPairs();
+	private void resetBoardParam(byte p1, byte p2) {
+		resetNumMatchedPairs(p1, p2);
 	}
 	
-	private void resetNumMatchedPairs() {
-		numOfMatched_P1 = 0;
+	private void resetNumMatchedPairs(byte p1, byte p2) {
+		numOfMatched_P1 = p1;
+		numOfMatched_P2 = p2;
 		this.view.displayNumOfMatchedPairs_P1(numOfMatched_P1);
+		this.view.displayNumOfMatchedPairs_P2(numOfMatched_P2);
 	}
 	
 	private void selectCards (int jugada){

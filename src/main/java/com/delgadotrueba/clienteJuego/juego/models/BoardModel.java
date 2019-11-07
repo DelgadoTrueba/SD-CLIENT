@@ -72,8 +72,13 @@ public class BoardModel {
 	////////////////////////////////////////////////////////////////////////////
 	
 	/** This method initializes the board with a new set of cards*/
-	public void initializeNewBoard() {
-		
+	public void reInitializeNewBoard(byte[][] types) {
+		for (int row = 0; row < NUMBER_OF_ROWS; row++) {
+			   for (int column = 0; column < NUMBER_OF_COLUMNS; column++) {
+				   byte type = types[row][column];
+				   mBoard[row][column] = new CellModel(type);
+			   }
+		}
 	}
 		
 	public boolean isCardValid(int row, int col) {

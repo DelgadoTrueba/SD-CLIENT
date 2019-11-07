@@ -75,7 +75,6 @@ public class ObservableBoarModel extends Observable {
 				if(resul[i][0] != -1 && resul[i][1] != -1) {
 					int row = resul[i][0];
 					int column = resul[i][1];
-					
 					setChanged();
 					notifyObservers(new BoardModelNotification(ActionsBoardModel.setMatchedCard, this.boardModel, row, column));
 				}
@@ -101,8 +100,8 @@ public class ObservableBoarModel extends Observable {
 		return this.boardModel.isSolved();
 	}
 	
-	public void initializeNewBoard() {
-		this.boardModel.initializeNewBoard();
+	public void reInitializeNewBoard(byte[][] types) {
+		this.boardModel.reInitializeNewBoard(types);
 	}
 	
 	public int[][] getSelectedCards(){
