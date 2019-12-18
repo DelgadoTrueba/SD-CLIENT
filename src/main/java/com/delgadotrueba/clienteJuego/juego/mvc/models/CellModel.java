@@ -1,6 +1,6 @@
-package com.delgadotrueba.clienteJuego.juego.models;
+package com.delgadotrueba.clienteJuego.juego.mvc.models;
 
-import com.delgadotrueba.clienteJuego.juego.utils.ErrorHandler;
+import com.delgadotrueba.clienteJuego.juego.mvc.utils.ErrorHandler;
 
 public class CellModel {
 

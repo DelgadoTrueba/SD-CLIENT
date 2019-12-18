@@ -17,7 +17,7 @@ import com.delgadotrueba.game2.interfazRMI.dto.DTO_Output;
 import com.delgadotrueba.game2.interfazRMI.dto.DTO_Output_MacthCard;
 import com.delgadotrueba.game2.interfazRMI.exceptions.RMIClientException;
 
-public class InterfazClienteRMI implements ClienteRMI {
+public class InterfazClienteRMI implements IGame {
 
 	private static byte CODOP_1 = 1;
 	private static byte CODOP_2 = 2;

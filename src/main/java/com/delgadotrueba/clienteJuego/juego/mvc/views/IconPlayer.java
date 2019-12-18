@@ -1,4 +1,4 @@
-package com.delgadotrueba.clienteJuego.juego.views;
+package com.delgadotrueba.clienteJuego.juego.mvc.views;
 
 import java.awt.Color;
 import java.io.File;
@@ -6,7 +6,7 @@ import java.io.File;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-import com.delgadotrueba.clienteJuego.juego.utils.ErrorHandler;
+import com.delgadotrueba.clienteJuego.juego.mvc.utils.ErrorHandler;
 
 public class IconPlayer extends JButton {
 

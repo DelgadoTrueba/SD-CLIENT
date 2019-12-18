@@ -1,9 +1,9 @@
 package com.delgadotrueba.clienteJuego;
 
-import com.delgadotrueba.clienteJuego.juego.controllers.Player1Controller;
-import com.delgadotrueba.clienteJuego.juego.models.BoardModel;
-import com.delgadotrueba.clienteJuego.juego.notifications.ObservableBoarModel;
-import com.delgadotrueba.clienteJuego.juego.views.BoardView;
+import com.delgadotrueba.clienteJuego.juego.mvc.controllers.Player1Controller;
+import com.delgadotrueba.clienteJuego.juego.mvc.models.BoardModel;
+import com.delgadotrueba.clienteJuego.juego.mvc.models.ObservableBoarModel;
+import com.delgadotrueba.clienteJuego.juego.mvc.views.BoardView;
 import com.delgadotrueba.game2.interfazRMI.IONetworkClient;
 import com.delgadotrueba.game2.interfazRMI.InterfazClienteRMI;
 import com.delgadotrueba.game2.interfazRMI.exceptions.RMIClientException;

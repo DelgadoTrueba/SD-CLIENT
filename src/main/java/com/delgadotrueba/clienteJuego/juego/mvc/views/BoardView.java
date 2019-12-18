@@ -1,4 +1,4 @@
-package com.delgadotrueba.clienteJuego.juego.views;
+package com.delgadotrueba.clienteJuego.juego.mvc.views;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -13,11 +13,11 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
 
-import com.delgadotrueba.clienteJuego.juego.models.BoardModel;
-import com.delgadotrueba.clienteJuego.juego.notifications.ActionsBoardModel;
-import com.delgadotrueba.clienteJuego.juego.notifications.BoardModelNotification;
-import com.delgadotrueba.clienteJuego.juego.notifications.ObservableBoarModel;
-import com.delgadotrueba.clienteJuego.juego.utils.Turn;
+import com.delgadotrueba.clienteJuego.juego.mvc.models.BoardModel;
+import com.delgadotrueba.clienteJuego.juego.mvc.models.ObservableBoarModel;
+import com.delgadotrueba.clienteJuego.juego.mvc.notifications.ActionsBoardModel;
+import com.delgadotrueba.clienteJuego.juego.mvc.notifications.BoardModelNotification;
+import com.delgadotrueba.clienteJuego.juego.mvc.utils.Turn;
 
 public class BoardView implements java.util.Observer{
 	

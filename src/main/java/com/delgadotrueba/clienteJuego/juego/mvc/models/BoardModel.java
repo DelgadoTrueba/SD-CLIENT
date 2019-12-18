@@ -1,11 +1,11 @@
-package com.delgadotrueba.clienteJuego.juego.models;
+package com.delgadotrueba.clienteJuego.juego.mvc.models;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
-import com.delgadotrueba.clienteJuego.juego.utils.ErrorHandler;
+import com.delgadotrueba.clienteJuego.juego.mvc.utils.ErrorHandler;
 
 public class BoardModel {
 	

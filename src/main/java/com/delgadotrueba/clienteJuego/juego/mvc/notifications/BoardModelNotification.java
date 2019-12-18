@@ -1,6 +1,6 @@
-package com.delgadotrueba.clienteJuego.juego.notifications;
+package com.delgadotrueba.clienteJuego.juego.mvc.notifications;
 
-import com.delgadotrueba.clienteJuego.juego.models.BoardModel;
+import com.delgadotrueba.clienteJuego.juego.mvc.models.BoardModel;
 
 public class BoardModelNotification {
 	

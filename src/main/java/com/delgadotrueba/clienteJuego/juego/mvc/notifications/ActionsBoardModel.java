@@ -1,4 +1,4 @@
-package com.delgadotrueba.clienteJuego.juego.notifications;
+package com.delgadotrueba.clienteJuego.juego.mvc.notifications;
 
 public enum ActionsBoardModel {
 	setMatchedCard,

@@ -2,7 +2,7 @@ package com.delgadotrueba.game2.interfazRMI;
 
 import com.delgadotrueba.game2.interfazRMI.exceptions.RMIClientException;
 
-public interface ClienteRMI {
+public interface IGame {
 
 	public void newGame() throws RMIClientException;
 	

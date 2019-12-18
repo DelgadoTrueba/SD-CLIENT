@@ -1,11 +1,10 @@
-package com.delgadotrueba.clienteJuego.juego.notifications;
+package com.delgadotrueba.clienteJuego.juego.mvc.models;
 
 import java.util.ArrayList;
 import java.util.Observable;
 
-import com.delgadotrueba.clienteJuego.juego.models.BoardModel;
-import com.delgadotrueba.clienteJuego.juego.notifications.ActionsBoardModel;
-import com.delgadotrueba.clienteJuego.juego.notifications.BoardModelNotification;
+import com.delgadotrueba.clienteJuego.juego.mvc.notifications.ActionsBoardModel;
+import com.delgadotrueba.clienteJuego.juego.mvc.notifications.BoardModelNotification;
 
 public class ObservableBoarModel extends Observable {
 

@@ -1,4 +1,4 @@
-package com.delgadotrueba.clienteJuego.juego.utils;
+package com.delgadotrueba.clienteJuego.juego.mvc.utils;
 
 public class ErrorHandler {
 	

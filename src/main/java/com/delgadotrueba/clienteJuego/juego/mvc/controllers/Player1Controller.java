@@ -1,15 +1,15 @@
-package com.delgadotrueba.clienteJuego.juego.controllers;
+package com.delgadotrueba.clienteJuego.juego.mvc.controllers;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.delgadotrueba.clienteJuego.juego.models.BoardModel;
-import com.delgadotrueba.clienteJuego.juego.notifications.ObservableBoarModel;
-import com.delgadotrueba.clienteJuego.juego.utils.ErrorHandler;
-import com.delgadotrueba.clienteJuego.juego.utils.Turn;
-import com.delgadotrueba.clienteJuego.juego.views.BoardView;
-import com.delgadotrueba.clienteJuego.juego.views.CellView;
-import com.delgadotrueba.game2.interfazRMI.ClienteRMI;
+import com.delgadotrueba.clienteJuego.juego.mvc.models.BoardModel;
+import com.delgadotrueba.clienteJuego.juego.mvc.models.ObservableBoarModel;
+import com.delgadotrueba.clienteJuego.juego.mvc.utils.ErrorHandler;
+import com.delgadotrueba.clienteJuego.juego.mvc.utils.Turn;
+import com.delgadotrueba.clienteJuego.juego.mvc.views.BoardView;
+import com.delgadotrueba.clienteJuego.juego.mvc.views.CellView;
+import com.delgadotrueba.game2.interfazRMI.IGame;
 import com.delgadotrueba.game2.interfazRMI.InterfazClienteRMI;
 import com.delgadotrueba.game2.interfazRMI.exceptions.RMIClientException;
 
