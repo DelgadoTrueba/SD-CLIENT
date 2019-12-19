@@ -7,6 +7,8 @@ import com.delgadotrueba.game2.interfazRMI.exceptions.InvalidDataInterfaceExcept
 
 public class DTO_Input_IniciarPartida extends DTO_Input {
 	
+	private byte OID;
+	
 	public DTO_Input_IniciarPartida(DataInputStream dataInput) throws InvalidDataInterfaceException {
 		super();
 		inicializarDatosApartirDeMensaje(dataInput);
@@ -18,9 +20,16 @@ public class DTO_Input_IniciarPartida extends DTO_Input {
 			if(err) {
 				/*LEER ERROR*/
 			}
+			else {
+				this.OID = dataInput.readByte();
+			}
 		} catch (IOException e) {
 			throw new InvalidDataInterfaceException();
 		}
+	}
+	
+	public byte getOID() {
+		return this.OID;
 	}
 	
 }

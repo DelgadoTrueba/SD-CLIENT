@@ -27,16 +27,21 @@ public class InterfazClienteRMI implements IGame {
 	private static byte CODOP_6 = 6;
 	private static byte CODOP_7 = 7;
 	private static byte CODOP_8 = 8;
-
+	private static byte NUEVA_PARTIDA = 16;
+	private byte OID;
 	
 	private IONetworkClient cliente;
 	
-	public void newGame() throws RMIClientException {
+	public void setOID(byte OID) {
+		this.OID = OID;
+	}
+	
+	public byte newGame() throws RMIClientException {
 
 		try {
 			cliente = this.crearSocket();
 			
-			DTO_Output dtoOutput = new DTO_Output(CODOP_1);
+			DTO_Output dtoOutput = new DTO_Output(NUEVA_PARTIDA, CODOP_1);
 			cliente.enviarMensaje(dtoOutput);
 			
 			DTO_Input_IniciarPartida respuesta = new DTO_Input_IniciarPartida(cliente.getDataIn());
@@ -45,6 +50,8 @@ public class InterfazClienteRMI implements IGame {
 			if(respuesta.getErr()) {
 				throw respuesta.getException();
 			}
+			
+			return respuesta.getOID();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -57,7 +64,7 @@ public class InterfazClienteRMI implements IGame {
 		try {
 			cliente = this.crearSocket();
 			
-			DTO_Output dtoOutput = new DTO_Output(CODOP_2);
+			DTO_Output dtoOutput = new DTO_Output(OID, CODOP_2);
 			cliente.enviarMensaje(dtoOutput);
 			
 			DTO_Input_TiposCartas respuesta = new DTO_Input_TiposCartas(cliente.getDataIn());
@@ -80,7 +87,7 @@ public class InterfazClienteRMI implements IGame {
 		try {
 			cliente = this.crearSocket();
 			
-			DTO_Output dtoOutput = new DTO_Output(CODOP_3);
+			DTO_Output dtoOutput = new DTO_Output(OID, CODOP_3);
 			cliente.enviarMensaje(dtoOutput);
 			
 			DTO_Input_ObtenerCartasEmparejadas respuesta 
@@ -104,7 +111,7 @@ public class InterfazClienteRMI implements IGame {
 		try {
 			cliente = this.crearSocket();
 			
-			DTO_Output dtoOutput = new DTO_Output(CODOP_4);
+			DTO_Output dtoOutput = new DTO_Output(OID, CODOP_4);
 			cliente.enviarMensaje(dtoOutput);
 			
 			DTO_Input_ObtenerPuntosJugador respuesta 
@@ -128,7 +135,7 @@ public class InterfazClienteRMI implements IGame {
 		try {
 			cliente = this.crearSocket();
 			
-			DTO_Output dtoOutput = new DTO_Output(CODOP_5);
+			DTO_Output dtoOutput = new DTO_Output(OID, CODOP_5);
 			cliente.enviarMensaje(dtoOutput);
 			
 			DTO_Input_ObtenerPuntosJugador respuesta 
@@ -153,7 +160,7 @@ public class InterfazClienteRMI implements IGame {
 		try {
 			cliente = this.crearSocket();
 			
-			DTO_Output_MacthCard dtoOutput = new DTO_Output_MacthCard(CODOP_6, r1, c1, r2, c2);
+			DTO_Output_MacthCard dtoOutput = new DTO_Output_MacthCard(OID, CODOP_6, r1, c1, r2, c2);
 			cliente.enviarMensaje(dtoOutput);
 			
 			
@@ -179,7 +186,7 @@ public class InterfazClienteRMI implements IGame {
 		try {
 			cliente = this.crearSocket();
 			
-			DTO_Output dtoOutput = new DTO_Output(CODOP_7);
+			DTO_Output dtoOutput = new DTO_Output(OID, CODOP_7);
 			cliente.enviarMensaje(dtoOutput);
 						
 			DTO_Input_EstaResuelto respuesta 
@@ -204,7 +211,7 @@ public class InterfazClienteRMI implements IGame {
 		try {
 			cliente = this.crearSocket();
 			
-			DTO_Output dtoOutput = new DTO_Output(CODOP_8);
+			DTO_Output dtoOutput = new DTO_Output(OID, CODOP_8);
 			cliente.enviarMensaje(dtoOutput);
 			
 			DTO_Input_ObtenerCartasEmparejadas respuesta 

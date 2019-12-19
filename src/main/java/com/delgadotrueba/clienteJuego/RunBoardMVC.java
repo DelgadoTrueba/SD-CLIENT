@@ -24,7 +24,10 @@ public class RunBoardMVC {
 			InterfazClienteRMI clienteRMI = new InterfazClienteRMI();
 			byte[][] tipos = null;
 			
-			clienteRMI.newGame();
+			byte OID = clienteRMI.newGame();
+			System.out.println("oid: "+OID);
+			clienteRMI.setOID(OID);
+			//FIN COSAS ESPECIALES
 			tipos = clienteRMI.obtenerTiposCartas();
 			
 			BoardModel myModel = new BoardModel(NUMBER_OF_ROWS, NUMBER_OF_COLUMNS, tipos);

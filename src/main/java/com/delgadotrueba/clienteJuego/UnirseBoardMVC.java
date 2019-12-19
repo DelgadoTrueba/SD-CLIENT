@@ -10,7 +10,7 @@ import com.delgadotrueba.game2.interfazRMI.exceptions.RMIClientException;
 
 public class UnirseBoardMVC {
 
-		public UnirseBoardMVC() throws RMIClientException{
+		public UnirseBoardMVC(byte OID) throws RMIClientException{
 
 			////////////////////////////////////////////////////////////////////////////
 			// DATA
@@ -22,6 +22,9 @@ public class UnirseBoardMVC {
 			
 			//RMI
 			InterfazClienteRMI clienteRMI = new InterfazClienteRMI();
+			clienteRMI.setOID(OID);
+			//FIN COSAS ESPECIALES
+			
 			clienteRMI.obtenerTiposCartas();
 			
 			BoardModel myModel = new BoardModel(NUMBER_OF_ROWS, NUMBER_OF_COLUMNS);

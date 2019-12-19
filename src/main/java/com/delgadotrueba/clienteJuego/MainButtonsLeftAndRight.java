@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Scanner;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -70,7 +71,16 @@ public class MainButtonsLeftAndRight {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						UnirseBoardMVC unirseRunBoardMVC = new UnirseBoardMVC();
+						
+//						JTextFieldValidation campo = new JTextFieldValidation();
+//						Integer oid = campo.getNumber();
+//						System.out.println(oid);
+						
+						System.out.println("Introduce el oid: ");
+						Scanner in = new Scanner(System.in);
+						byte OID = in.nextByte();
+						
+						UnirseBoardMVC unirseRunBoardMVC = new UnirseBoardMVC(OID);
 						frame.setVisible(false);
 					} catch (RMIClientException e1) {
 						errorOldGame();

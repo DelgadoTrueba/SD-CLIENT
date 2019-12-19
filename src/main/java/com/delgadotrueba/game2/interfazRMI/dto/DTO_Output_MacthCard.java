@@ -12,8 +12,8 @@ public class DTO_Output_MacthCard extends DTO_Output {
 	private byte r2;
 	private byte c2;
 	
-	public DTO_Output_MacthCard(byte codop, byte r1, byte c1, byte r2, byte c2) throws IOException {
-		super(codop);
+	public DTO_Output_MacthCard(byte oid, byte codop, byte r1, byte c1, byte r2, byte c2) throws IOException {
+		super(oid, codop);
 		this.r1 = r1;
 		this.c1 = c1;
 		this.r2 = r2;

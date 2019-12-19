@@ -4,7 +4,7 @@ import com.delgadotrueba.game2.interfazRMI.exceptions.RMIClientException;
 
 public interface IGame {
 
-	public void newGame() throws RMIClientException;
+	public byte newGame() throws RMIClientException;
 	
 	public byte[][] obtenerTiposCartas() throws RMIClientException;
 	
